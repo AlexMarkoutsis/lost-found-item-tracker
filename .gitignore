@@ -210,3 +210,4 @@ __marimo__/
 *.pyc
 node_modules/
 settings.py
+project.xml
