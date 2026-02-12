@@ -209,3 +209,5 @@ __marimo__/
 # Manually added
 *.pyc
 node_modules/
+settings.py
+project.xml
