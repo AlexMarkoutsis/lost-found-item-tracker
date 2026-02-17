@@ -50,6 +50,7 @@ SIMPLE_JWT = {
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,6 +63,7 @@ INSTALLED_APPS = [
 ]                   # goes for any future subsequent "ModuleNotFoundError"s
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -97,9 +99,21 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',			# Change this
+        'USER': 'postgres',				# May need to be changed
+        'PASSWORD': 'qwerty123456!',	# Change this
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+"""
+        'USER': 'postgres',				# May need to be changed
+        'PASSWORD': 'your_password',	# Change this
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+"""
 
 
 # Password validation

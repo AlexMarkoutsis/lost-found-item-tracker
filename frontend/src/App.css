@@ -1,42 +1,232 @@
-/*#root {*/
-/*  max-width: 1280px;*/
-/*  margin: 0 auto;*/
-/*  padding: 2rem;*/
-/*  text-align: center;*/
-/*}*/
+#root {
+  min-height: 100vh;
+}
 
-/*.logo {*/
-/*  height: 6em;*/
-/*  padding: 1.5em;*/
-/*  will-change: filter;*/
-/*  transition: filter 300ms;*/
-/*}*/
-/*.logo:hover {*/
-/*  filter: drop-shadow(0 0 2em #646cffaa);*/
-/*}*/
-/*.logo.react:hover {*/
-/*  filter: drop-shadow(0 0 2em #61dafbaa);*/
-/*}*/
+/* A simple wireframe-ish look to match the provided prototype */
 
-/*@keyframes logo-spin {*/
-/*  from {*/
-/*    transform: rotate(0deg);*/
-/*  }*/
-/*  to {*/
-/*    transform: rotate(360deg);*/
-/*  }*/
-/*}*/
+.screen {
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 
-/*@media (prefers-reduced-motion: no-preference) {*/
-/*  a:nth-of-type(2) .logo {*/
-/*    animation: logo-spin infinite 20s linear;*/
-/*  }*/
-/*}*/
+  /* Background like the provided example (dark top, thin yellow stripe, white middle, yellow bottom) */
+  background: linear-gradient(
+    to bottom,
+    #333333 0px,
+    #333333 60px,
+    #f4b400 60px,
+    #f4b400 68px,
+    #f6f6f6 68px,
+    #f6f6f6 74%,
+    #f4b400 74%,
+    #f4b400 100%
+  );
+}
 
-/*.card {*/
-/*  padding: 2em;*/
-/*}*/
+.prototype-title {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  opacity: 0.8;
+}
 
-/*.read-the-docs {*/
-/*  color: #888;*/
-/*}*/
+.page {
+  width: min(900px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.page__title {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.frame {
+  width: min(520px, 100%);
+  background: white;
+  border: 2px solid #111;
+  padding: 18px;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+
+}
+
+.frame--wide {
+  width: min(820px, 100%);
+}
+
+.frame__inner {
+  border: 2px solid #111;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 14px;
+
+}
+
+.title-box {
+  border: 2px solid #111;
+  padding: 10px 12px;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 12px;
+
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field__label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.field__input {
+  width: 100%;
+  height: 34px;
+  border: 2px solid #111;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 10px;
+
+}
+
+.field__textarea {
+  height: auto;
+  resize: vertical;
+}
+
+.field__hint {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.button-col {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding-top: 6px;
+}
+
+.btn {
+  width: 170px;
+  height: 36px;
+  border: 2px solid #111;
+  background: #fff;
+  border-radius: 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--secondary {
+  background: #f3f4f6;
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  opacity: 0.65;
+  text-align: center;
+}
+
+.error {
+  margin: 0;
+  font-size: 12px;
+  color: #b00020;
+}
+
+/* Main Page layout */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.main-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 680px) {
+  .main-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.list-box {
+  border: 2px solid #111;
+  min-height: 240px;
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+  border-radius: 14px;
+
+}
+
+.list-box__note {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.list-item {
+  border: 1px solid #111;
+  padding: 8px;
+  font-size: 12px;
+  background: #fff;
+  border-radius: 12px;
+
+}
+
+.list-item--empty {
+  opacity: 0.7;
+}
+
+.list-item__title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.list-item__desc {
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.list-item__meta {
+  opacity: 0.75;
+  font-size: 11px;
+}
+
+.main-actions {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+}

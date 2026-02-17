@@ -2,21 +2,23 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../App.jsx'
 
-export default function LoginPage() {
+export default function RegistrationPage() {
   const navigate = useNavigate()
   const { setCurrentUser } = useContext(AppContext)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [rePassword, setRePassword] = useState('')
+  const mismatch = password.length > 0 && rePassword.length > 0 && password !== rePassword
 
   return (
     <div className="screen">
       <div className="page">
-        <div className="page__title">Login Page</div>
+        <div className="page__title">Registration Page</div>
 
         <div className="frame">
           <div className="frame__inner">
-            <div className="title-box">PantherFind</div>
+            <div className="title-box">Create Account</div>
 
             <label className="field">
               <span className="field__label">Username</span>
@@ -37,25 +39,40 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
               />
             </label>
 
+            <label className="field">
+              <span className="field__label">Re-Password</span>
+              <input
+                className="field__input"
+                value={rePassword}
+                onChange={(e) => setRePassword(e.target.value)}
+                placeholder="Re-Password"
+                type="password"
+                autoComplete="new-password"
+              />
+            </label>
+
+            {mismatch ? <p className="error">Passwords do not match.</p> : null}
+
             <div className="button-col">
-              {/* Login button -> Main Page*/}
+              {/* Create and Login Button -> Main Page*/}
               <button
                 className="btn"
+                disabled={!username.trim() || !password || mismatch}
                 onClick={() => {
-                  setCurrentUser(username?.trim() ? username.trim() : 'Username')
+                  setCurrentUser(username.trim())
                   navigate('/main')
                 }}
               >
-                login
+                Create and Login
               </button>
 
-              {/* Register Button -> Registration Page*/}
-              <button className="btn" onClick={() => navigate('/register')}>
-                register
+              {/* Back -> Login Page*/}
+              <button className="btn" onClick={() => navigate('/login')}>
+                Back
               </button>
             </div>
           </div>
