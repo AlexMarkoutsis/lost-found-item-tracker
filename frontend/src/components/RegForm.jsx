@@ -72,4 +72,4 @@ function RegForm({route, method}){
     </form>
 }
 
-export default Form
+export default RegForm
