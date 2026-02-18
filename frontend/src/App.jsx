@@ -61,6 +61,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<ProtectedRoute> <Home/> </ProtectedRoute>}/>
                     <Route path="*" element={<Navigate to="/login" replace />} />
+                    <Route path="/main" element={<MainPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegistrationPage />} />
                     <Route path="/submit" element={<ItemSubmissionPage />} />
