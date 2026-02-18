@@ -10,5 +10,5 @@ urlpatterns = [
     path("notes/delete/<int:pk>/", views.NoteDelete.as_view(), name="delete-note"),
     path("user/register/", CreateUserView.as_view(), name="register"),
     path('login/', login_view),
-    path('items/', list_items),
+    path('items/', list_items, name="main"),
 ]
