@@ -62,14 +62,33 @@ export default function RegistrationPage() {
               <button
                 className="btn"
                 disabled={!username.trim() || !password || mismatch}
-                onClick={() => {
-                  setCurrentUser(username.trim())
-                  navigate('/main')
+                onClick={async () => {
+                  try {
+                    const response = await fetch("http://127.0.0.1:8000/api/auth/register/", {
+                      method: "POST",
+                      headers: {"Content-Type": "application/json"},
+                      body: JSON.stringify({
+                        username: username.trim(),
+                        password: password
+                      }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                      setCurrentUser(data.username);
+                      navigate('/main');
+                    } else {
+                      alert(data.error || "Registration failed");
+                    }
+                  } catch (err) {
+                    console.error("Registration error:", err);
+                    alert("Something went wrong during registration.");
+                  }
                 }}
               >
                 Create and Login
               </button>
-
               {/* Back -> Login Page*/}
               <button className="btn" onClick={() => navigate('/login')}>
                 Back
