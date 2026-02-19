@@ -79,7 +79,11 @@ export default function RegistrationPage() {
                       setCurrentUser(data.username);
                       navigate('/main');
                     } else {
-                      alert(data.error || "Registration failed");
+                      if (data.username) {
+                        alert(data.username[0]); // "Username is already taken."
+                        } else {
+                        alert(data.error || "Registration failed");
+                      }
                     }
                   } catch (err) {
                     console.error("Registration error:", err);
