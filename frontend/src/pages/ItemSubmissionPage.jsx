@@ -30,26 +30,37 @@ export default function ItemSubmissionPage() {
           <div className="frame__inner">
             <form
               className="form"
-              onSubmit={(e) => {
-                e.preventDefault()
-                if (!canSubmit) return
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!canSubmit) return;
 
-                setItems((prev) => [
-                  {
-                    id: `it-${Math.random().toString(16).slice(2)}`,
-                    itemName: itemName.trim(),
-                    description: description.trim(),
-                    category,
-                    location: location.trim(),
-                    dateFound,
-                    imageName,
-                    createdAt: Date.now(),
-                  },
-                  ...prev,
-                ])
+                try {
+                  const response = await fetch("http://127.0.0.1:8000/api/items/create/", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                      title: itemName.trim(),
+                      description: description.trim(),
+                      category,
+                      location: location.trim(),
+                      date_reported: dateFound,
+                      status: "found",
+                      reporter: 1   // TODO: replace with real user ID (JWT -or- authentication token needed)
+                    }),
+                  });
 
-                {/* Submit Button -> Main Page*/}
-                navigate('/main')
+                  const data = await response.json();
+
+                  if (response.ok) {
+                    setItems((prev) => [data, ...prev]);
+                    navigate("/main");
+                  } else {
+                    alert("Failed to submit item: " + JSON.stringify(data));
+                  }
+                } catch (err) {
+                  console.error("Item submission error:", err);
+                  alert("Something went wrong submitting the item.");
+                }
               }}
             >
               <label className="field">
