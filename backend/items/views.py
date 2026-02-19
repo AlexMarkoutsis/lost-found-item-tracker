@@ -1,13 +1,18 @@
 # from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
+
 from .serializers import UserSerializer, NoteSerializer, ItemSerializer
 from .models import Note, Item
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+import json
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -40,21 +45,25 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-@api_view(['POST'])
+@csrf_exempt
 def login_view(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
+    if request.method == "POST":
+        data = json.loads(request.body)
+        username = data.get("username")
+        password = data.get("password")
 
-    user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=username, password=password)
 
-    if user is not None:
-        login(request, user)
-        return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({"success": True, "user": user.username})
 
-    return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"success": False, "error": "Invalid credentials"}, status=400)
+
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def list_items(request):
     status_filter = request.GET.get('status')
     items = Item.objects.all()

@@ -1,13 +1,15 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../App.jsx'
 
 function formatItem(item) {
-  const header = item.itemName ? item.itemName : 'Untitled Item'
-  const desc = item.description ? item.description : ''
+  const header = item.title || item.itemName || 'Untitled Item'
+  const desc = item.description || ''
   const cat = item.category ? `Category: ${item.category}` : ''
   const where = item.location ? `Location: ${item.location}` : ''
-  const when = item.dateFound ? `Date found: ${item.dateFound}` : ''
+  const when = item.date_found || item.dateFound
+    ? `Date found: ${item.date_found || item.dateFound}`
+    : ''
   const meta = [cat, where, when].filter(Boolean).join(' · ')
 
   return (
@@ -21,9 +23,28 @@ function formatItem(item) {
 
 export default function MainPage() {
   const navigate = useNavigate()
-  const { currentUser, items } = useContext(AppContext)
+  const {currentUser, items, setItems} = useContext(AppContext)
 
-  const sorted = [...items].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
+  // Fetch real items from Django
+  useEffect(() => {
+    async function loadItems() {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/items/?status=found");
+        const data = await response.json();
+
+        setItems(data);   // already filtered by backend
+      } catch (err) {
+        console.error("Failed to load items:", err);
+      }
+    }
+
+    loadItems()
+  }, [setItems])
+
+  const sorted = Array.isArray(items)
+  ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
+  : [];
+
 
   return (
     <div className="screen">
@@ -34,16 +55,18 @@ export default function MainPage() {
           <div className="frame__inner">
             <div className="main-header">
               <div className="main-header__left">PantherFind</div>
-              <div className="main-header__right">({currentUser || 'Username'})</div>
+              <div className="main-header__right">({currentUser})</div>
             </div>
 
             <div className="main-body">
               <div className="main-list">
-                <div className="section-title">Lost Items</div>
+                <div className="section-title">Found Items</div>
+
                 <div className="list-box" role="list">
-                  {/* List of Posted Items Goes Here [Newest at top]*/}
                   {sorted.length === 0 ? (
-                    <div className="list-item list-item--empty">No items posted yet.</div>
+                    <div className="list-item list-item--empty">
+                      No found items yet.
+                    </div>
                   ) : (
                     sorted.map((it) => (
                       <div key={it.id} className="list-item" role="listitem">
@@ -55,7 +78,6 @@ export default function MainPage() {
               </div>
 
               <div className="main-actions">
-                {/* Post Item Button -> Item Submission Page*/}
                 <button className="btn" onClick={() => navigate('/submit')}>
                   Post Item
                 </button>
