@@ -14,10 +14,10 @@ from pathlib import Path
 from datetime import timedelta
 
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 
-load_dotenv()
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
