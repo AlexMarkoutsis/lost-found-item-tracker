@@ -15,14 +15,17 @@ from .serializers import ItemSerializer, UserProfileSerializer
 @api_view(['POST'])
 def register_view(request):
     username = request.data['username']
+    email = request.data['email']
     password = request.data['password']
 
     User.objects.create_user(
         username=username,
+        email=email,
         password=password
     )
     return Response({
         "username": username,
+        "email": email,
         "password": password
     })
 

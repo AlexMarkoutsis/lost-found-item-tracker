@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import {use, useContext, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../App.jsx'
 import items from "../items.js";
@@ -9,6 +9,7 @@ export default function RegistrationPage() {
   const { setCurrentUser } = useContext(AppContext)
 
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
   const mismatch = password.length > 0 && rePassword.length > 0 && password !== rePassword
@@ -20,7 +21,7 @@ export default function RegistrationPage() {
         // e.preventDefault()
 
         try{
-            const res = await items.post("/register/", {username, password})
+            const res = await items.post("/register/", {username, email, password})
         }
         catch (error){
             alert(error)
@@ -58,6 +59,18 @@ export default function RegistrationPage() {
             </label>
 
             <label className="field">
+              <span className="field__label">Email</span>
+              <input
+                className="field__input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                type="email"
+                autoComplete="email"
+              />
+            </label>
+
+            <label className="field">
               <span className="field__label">Password</span>
               <input
                 className="field__input"
@@ -80,6 +93,7 @@ export default function RegistrationPage() {
                 autoComplete="new-password"
               />
             </label>
+
 
             {mismatch ? <p className="error">Passwords do not match.</p> : null}
 

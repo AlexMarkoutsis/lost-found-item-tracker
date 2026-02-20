@@ -7,7 +7,6 @@ const items = axios.create({
 
 items.interceptors.request.use(
     (config) => {
-        console.log("in interceptors request use")
         const token = localStorage.getItem(ACCESS_TOKEN);
         if(token){
             config.headers.Authorization = `Bearer ${token}`
@@ -15,7 +14,6 @@ items.interceptors.request.use(
         return config
     },
     (error) => {
-        console.log("axios rejected")
         return Promise.reject(error)
     }
 )
