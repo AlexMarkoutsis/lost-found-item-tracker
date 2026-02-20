@@ -1,7 +1,56 @@
-import Form from "../components/Form"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-    return <Form route="/items/token/" method="login" />
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("http://127.0.0.1:8000/api/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Login successful!");
+
+      navigate("/lost-items");
+    } else {
+      alert(data.error);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
 }
 
-export default Login
+export default Login;
