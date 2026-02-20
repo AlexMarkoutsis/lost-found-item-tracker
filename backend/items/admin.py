@@ -12,10 +12,6 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "display_name", "role")
     list_filter = ("role",)
 
-@admin.register(TESTU)
-class TESTUAdmin(admin.ModelAdmin):
-    list_display = ("use", "display_nam", "rol")
-
 @admin.register(ActivityLog)
 class ActivityLogAdmin(admin.ModelAdmin):
     list_display = ("user", "action", "item", "timestamp")

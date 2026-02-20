@@ -2,23 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class TESTU(models.Model):
-
-    ROL_CHOICES = [
-        ('standar', 'Standard Use'),
-        ('moderato', 'Moderato'),
-        ('admi', 'Administrato'),
-    ]
-
-    use = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profil')
-    display_nam = models.CharField(max_length=100)
-    rol = models.CharField(max_length=20, choices=ROL_CHOICES, default='standard')
-
-    # DR-11: Activity logs will be implemented as a separate model
-    # DR-12: PII is stored here but not exposed publicly
-
-    def __str__(self):
-        return self.display_nam
 
 class UserProfile(models.Model):
     """
