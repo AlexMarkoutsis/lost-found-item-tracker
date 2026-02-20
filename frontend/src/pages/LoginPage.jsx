@@ -45,14 +45,25 @@ export default function LoginPage() {
               {/* Login button -> Main Page*/}
               <button
                 className="btn"
-                onClick={() => {
-                  setCurrentUser(username?.trim() ? username.trim() : 'Username')
-                  navigate('/main')
+                onClick={async () => {
+                  const response = await fetch("http://127.0.0.1:8000/api/auth/login/", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({username, password}),
+                  });
+
+                  const data = await response.json();
+
+                  if (response.ok) {
+                    setCurrentUser(data.user || username);
+                    navigate('/main');
+                  } else {
+                    alert(data.error || "Login failed");
+                  }
                 }}
               >
                 login
               </button>
-
               {/* Register Button -> Registration Page*/}
               <button className="btn" onClick={() => navigate('/register')}>
                 register
