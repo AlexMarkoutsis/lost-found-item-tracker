@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Item, UserProfile, ActivityLog, TESTU
+from .models import Item, UserProfile, ActivityLog
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

@@ -91,7 +91,7 @@ export default function RegistrationPage() {
                 onClick={() => {
                   setCurrentUser(username.trim())
                     handleCreate()
-                  // navigate('/main')
+                  navigate('/main')
                 }}
               >
                 Create and Login
