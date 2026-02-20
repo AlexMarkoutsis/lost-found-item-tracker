@@ -2,8 +2,6 @@
   min-height: 100vh;
 }
 
-/* A simple wireframe-ish look to match the provided prototype */
-
 .screen {
   min-height: 100vh;
   padding: 24px 16px;
@@ -13,18 +11,43 @@
   justify-content: center;
   gap: 16px;
 
-  /* Background like the provided example (dark top, thin yellow stripe, white middle, yellow bottom) */
+  /* Background Image */
+  background-image: url("./assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  /* Top and bottom colored part of background (Grey Yellow (transparent[background image]) Yellow) */
   background: linear-gradient(
     to bottom,
     #333333 0px,
     #333333 60px,
+
     #f4b400 60px,
     #f4b400 68px,
-    #f6f6f6 68px,
-    #f6f6f6 74%,
+
+    transparent 68px,
+    transparent 74%,
+
     #f4b400 74%,
     #f4b400 100%
   );
+}
+
+/* Keep page content above overlay */
+.screen > * {
+  position: relative;
+  z-index: 1;
 }
 
 .prototype-title {
@@ -99,11 +122,32 @@
   font-size: 13px;
   border-radius: 10px;
 
+  transition: filter 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
 }
 
 .field__textarea {
   height: auto;
   resize: vertical;
+}
+
+/* Input hover visual */
+.field__input:hover,
+.field__textarea:hover {
+  filter: brightness(0.92);
+}
+
+/* Outline while clicked into input field */
+.field__input:focus,
+.field__textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.15);
+  filter: brightness(1);
+}
+
+/* Give the "press" feel when clicking on input */
+.field__input:active,
+.field__textarea:active {
+  transform: scale(0.995);
 }
 
 .field__hint {
@@ -126,11 +170,26 @@
   border-radius: 12px;
   font-size: 13px;
   cursor: pointer;
+
+  transition: background-color 0.15s ease,
+              filter 0.15s ease,
+              transform 0.05s ease,
+              box-shadow 0.05s ease;
+}
+
+.btn:hover {
+  filter: brightness(0.85);
+}
+
+.btn:active {
+  transform: scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
+  filter: none;
 }
 
 .btn--secondary {
