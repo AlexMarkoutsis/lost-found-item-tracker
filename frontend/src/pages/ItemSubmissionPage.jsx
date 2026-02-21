@@ -1,6 +1,7 @@
 import { useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../App.jsx'
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "../constants.js";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10)
@@ -35,9 +36,13 @@ export default function ItemSubmissionPage() {
                 if (!canSubmit) return;
 
                 try {
+                  const access_token = localStorage.getItem(ACCESS_TOKEN)
                   const response = await fetch("http://127.0.0.1:8000/api/items/create/", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${access_token}`
+                    },
                     body: JSON.stringify({
                       title: itemName.trim(),
                       description: description.trim(),
@@ -52,6 +57,7 @@ export default function ItemSubmissionPage() {
                   const data = await response.json();
 
                   if (response.ok) {
+
                     setItems((prev) => [data, ...prev]);
                     navigate("/main");
                   } else {
