@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
+from django.db.models import Q
+
 from .serializers import UserSerializer, NoteSerializer, ItemSerializer
 from .models import Note, Item
 from rest_framework import generics
@@ -67,11 +69,30 @@ def login_view(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def list_items(request):
-    status_filter = request.GET.get('status')
     items = Item.objects.all()
 
+    # Status filter
+    status_filter = request.GET.get('status')
     if status_filter:
         items = items.filter(status=status_filter.lower())
+
+    # Category filter
+    category_filter = request.GET.get('category')
+    if category_filter:
+        items = items.filter(category__iexact=category_filter)
+
+    # Location filter (partial match)
+    location_filter = request.GET.get('location')
+    if location_filter:
+        items = items.filter(location__icontains=location_filter)
+
+    # Search filter (title or description)
+    search_filter = request.GET.get('search')
+    if search_filter:
+        items = items.filter(
+            Q(title__icontains=search_filter) |
+            Q(description__icontains=search_filter)
+        )
 
     serializer = ItemSerializer(items, many=True)
     return Response(serializer.data)

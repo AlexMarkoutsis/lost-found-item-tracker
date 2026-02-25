@@ -7,8 +7,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     # Auth endpoints
-    path("api/auth/token/", TokenObtainPairView.as_view(), name="get_token"),
-    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/register/", CreateUserView.as_view(), name="register"),
     path("api/auth/login/", login_view, name="login"),
 
