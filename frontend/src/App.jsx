@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
+import ItemDetails from './pages/ItemDetails.jsx'
 
 
 export const AppContext = createContext(null)
@@ -55,24 +56,22 @@ export default function App() {
         [currentUser, items],
     )
 
-  return (
-    <BrowserRouter>
-      <AppContext.Provider value={ctx}>
-        <Routes>
-
-          <Route path="/" element={<Navigate to="/login" replace />}/>
-
-          <Route path="/main" element={<MainPage/>}/>
-          <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/register" element={<RegistrationPage/>}/>
-          <Route path="/submit" element={<ProtectedRoute><ItemSubmissionPage/></ProtectedRoute>}/>
-          <Route path="/logout" element={<Logout/>}/>
-
-          {/* Wildcard goes LAST */}
-          <Route path="*" element={<NotFound/>}/>
-
-        </Routes>
-      </AppContext.Provider>
-    </BrowserRouter>
-  )
+    return (
+        <BrowserRouter>
+            <AppContext.Provider value={ctx}>
+                <Routes>
+                    <Route path="/" element={<ProtectedRoute> <Home/> </ProtectedRoute>}/>
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                    <Route path="/main" element={<MainPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegistrationPage />} />
+                    <Route path="/submit" element={<ItemSubmissionPage />} />
+                    <Route path="/logout" element={<Logout/>}/>
+                    <Route path="/register" element={<RegisterAndLogout/>}/>
+                    <Route path="/item-details" element={<ItemDetails />} />
+                    <Route path="*" element={<NotFound/>}></Route>
+                </Routes>
+            </AppContext.Provider>
+        </BrowserRouter>
+    )
 }
