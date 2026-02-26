@@ -10,19 +10,19 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "password"]
         extra_kwargs = {"password": {"write_only": True}}
 
-    def create(self, validated_data):
-        # user = User.objects.create_user(**validated_data)
-        # return user
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username is already taken.")
+        return value
 
-        # Adding the below line made it work for me.
-        instance.is_active = True
-        if password is not None:
-            # Set password does the hash, so you don't need to call make_password
-            instance.set_password(password)
-        instance.save()
-        return instance
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.is_active = True
+        user.set_password(password)
+        user.save()
+        return user
+
 
 
 class NoteSerializer(serializers.ModelSerializer):
@@ -36,3 +36,4 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
+        read_only_fields = ["reporter"]

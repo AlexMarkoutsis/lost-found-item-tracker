@@ -4,12 +4,14 @@ from .views import (
     list_items,
     NoteListCreate,
     NoteDelete,
-    CreateUserView,
+    CreateUserView, create_item,
 )
 
 urlpatterns = [
     # Items
     path("items/", list_items, name="items"),
+    path('items/create/', create_item, name="create-item"),
+
 
     # Notes
     path("notes/", NoteListCreate.as_view(), name="note-list"),

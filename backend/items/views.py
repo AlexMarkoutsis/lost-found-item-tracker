@@ -1,6 +1,7 @@
 # from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import UserSerializer, NoteSerializer, ItemSerializer
@@ -39,6 +40,7 @@ class NoteDelete(generics.DestroyAPIView):
         return Note.objects.filter(author=user)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -73,3 +75,13 @@ def list_items(request):
 
     serializer = ItemSerializer(items, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_item(request):
+    serializer = ItemSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(reporter=request.user)
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
