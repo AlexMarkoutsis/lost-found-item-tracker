@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
+import ItemDetails from './pages/ItemDetails.jsx'
 
 
 export const AppContext = createContext(null)
@@ -67,6 +68,7 @@ export default function App() {
                     <Route path="/submit" element={<ItemSubmissionPage />} />
                     <Route path="/logout" element={<Logout/>}/>
                     <Route path="/register" element={<RegisterAndLogout/>}/>
+                    <Route path="/item-details" element={<ItemDetails />} />
                     <Route path="*" element={<NotFound/>}></Route>
                 </Routes>
             </AppContext.Provider>
