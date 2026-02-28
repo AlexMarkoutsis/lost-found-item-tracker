@@ -14,6 +14,8 @@ import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
 import ItemDetails from './pages/ItemDetails.jsx'
 
+import { AuthProvider } from "./context/AuthContext";
+
 
 export const AppContext = createContext(null)
 
@@ -57,21 +59,56 @@ export default function App() {
     )
 
     return (
-        <BrowserRouter>
-            <AppContext.Provider value={ctx}>
-                <Routes>
-                    <Route path="/" element={<ProtectedRoute> <Home/> </ProtectedRoute>}/>
-                    <Route path="*" element={<Navigate to="/login" replace />} />
-                    <Route path="/main" element={<MainPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegistrationPage />} />
-                    <Route path="/submit" element={<ItemSubmissionPage />} />
-                    <Route path="/logout" element={<Logout/>}/>
-                    <Route path="/register" element={<RegisterAndLogout/>}/>
-                    <Route path="/item-details" element={<ItemDetails />} />
-                    <Route path="*" element={<NotFound/>}></Route>
-                </Routes>
-            </AppContext.Provider>
-        </BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+
+            {/* Public routes */}
+            <Route path="/login" element={<LoginPage/>}/>
+            <Route path="/register" element={<RegistrationPage/>}/>
+
+            {/* Protected routes */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/main"
+              element={
+                <ProtectedRoute>
+                  <MainPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/submit"
+              element={
+                <ProtectedRoute>
+                  <ItemSubmissionPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/logout"
+              element={
+                <ProtectedRoute>
+                  <Logout/>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound/>}/>
+
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
     )
 }

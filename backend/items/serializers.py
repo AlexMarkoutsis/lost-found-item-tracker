@@ -1,14 +1,20 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 # from django.contrib.auth.hashers import make_password
-from .models import Note, Item
+from .models import Note, Item, UserProfile
 
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["role"]
 
 class UserSerializer(serializers.ModelSerializer):
+    profile = UserProfileSerializer()
+
     class Meta:
         model = User
-        fields = ["id", "username", "password"]
-        extra_kwargs = {"password": {"write_only": True}}
+        fields = ["id", "username", "password", "profile"]
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -22,7 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
 
 
 class NoteSerializer(serializers.ModelSerializer):

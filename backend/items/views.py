@@ -49,6 +49,13 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def me(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+
 @csrf_exempt
 def login_view(request):
     if request.method == "POST":

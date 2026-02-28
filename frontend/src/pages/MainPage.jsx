@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {AppContext} from '../App.jsx'
+import { AuthContext } from '../context/AuthContext'
 
 function formatItem(item) {
   const header = item.title || item.itemName || 'Untitled Item'
@@ -23,7 +23,9 @@ function formatItem(item) {
 
 export default function MainPage() {
   const navigate = useNavigate()
-  const {currentUser, items, setItems} = useContext(AppContext)
+  const { user, logout } = useContext(AuthContext)
+  const [items, setItems] = useState([])
+
 
   // Item filtering
   const [filterName, setFilterName] = useState('');
@@ -35,7 +37,7 @@ export default function MainPage() {
   useEffect(() => {
     async function loadItems() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/items/?status=found");
+        const response = await fetch("/api/items/?status=found");
         const data = await response.json();
 
         setItems(data);   // already filtered by backend
@@ -61,7 +63,7 @@ export default function MainPage() {
           <div className="frame__inner">
             <div className="main-header">
               <div className="main-header__left">PantherFind</div>
-              <div className="main-header__right">({currentUser})</div>
+              <div className="main-header__right">({user?.username})</div>
             </div>
 
             <div className="main-body">
@@ -116,9 +118,7 @@ export default function MainPage() {
                     if (filterLocation.trim()) params.append("location", filterLocation.trim());
 
                     try {
-                      const response = await fetch(
-                        `http://127.0.0.1:8000/api/items/?${params.toString()}`
-                      );
+                      const response = await fetch(`/api/items/?${params.toString()}`);
                       const data = await response.json();
                       setItems(data);
                     } catch (err) {
@@ -153,7 +153,13 @@ export default function MainPage() {
                   Post Item
                 </button>
 
-                <button className="btn btn--secondary" onClick={() => navigate('/login')}>
+                <button
+                  className="btn btn--secondary"
+                  onClick={() => {
+                    logout();
+                    navigate("/login");
+                  }}
+                >
                   Log out
                 </button>
               </div>
