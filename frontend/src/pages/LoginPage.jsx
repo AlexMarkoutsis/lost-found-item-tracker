@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../App.jsx'
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "../constants.js";
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -46,7 +47,7 @@ export default function LoginPage() {
               <button
                 className="btn"
                 onClick={async () => {
-                  const response = await fetch("http://127.0.0.1:8000/api/auth/login/", {
+                  const response = await fetch("http://127.0.0.1:8000/api/auth/token/", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({username, password}),
@@ -55,6 +56,8 @@ export default function LoginPage() {
                   const data = await response.json();
 
                   if (response.ok) {
+                    localStorage.setItem(ACCESS_TOKEN, data.access)
+                    localStorage.setItem(REFRESH_TOKEN, data.refresh)
                     setCurrentUser(data.user || username);
                     navigate('/main');
                   } else {

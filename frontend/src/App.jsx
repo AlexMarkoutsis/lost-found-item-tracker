@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
+import ItemDetails from './pages/ItemDetails.jsx'
 
 
 export const AppContext = createContext(null)

@@ -103,6 +103,6 @@ def list_items(request):
 def create_item(request):
     serializer = ItemSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        serializer.save(reporter=request.user)
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
