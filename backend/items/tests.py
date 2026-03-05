@@ -3,7 +3,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 """
-Make sure the porjects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
+Make sure the projects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
 
 Tests can be ran from terminal while in the backend directory
 
@@ -32,10 +32,10 @@ class AuthApiTests(TestCase):
         self.assertIn(res.status_code, (200, 201), res.data if hasattr(res, "data") else res.content)
 
         # Verify user is created
-        self.assertTrue(User.objects.filter(username="newuser").exists())
+        self.assertTrue(User.objects.filter(username="user").exists())
 
         # Verify the password is hashed
-        user = User.objects.get(username="newuser")
+        user = User.objects.get(username="user")
         self.assertNotEqual(user.password, payload["password"])
         self.assertTrue(user.check_password(payload["password"]))
 

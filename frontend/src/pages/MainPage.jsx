@@ -1,6 +1,6 @@
-import { useContext, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AppContext } from '../App.jsx'
+import {useContext, useEffect, useState} from 'react'
+import {useNavigate} from 'react-router-dom'
+import {AppContext} from '../App.jsx'
 
 function formatItem(item) {
   const header = item.title || item.itemName || 'Untitled Item'
@@ -25,6 +25,12 @@ export default function MainPage() {
   const navigate = useNavigate()
   const {currentUser, items, setItems} = useContext(AppContext)
 
+  // Item filtering
+  const [filterName, setFilterName] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterLocation, setFilterLocation] = useState('');
+
+
   // Fetch real items from Django
   useEffect(() => {
     async function loadItems() {
@@ -42,8 +48,8 @@ export default function MainPage() {
   }, [setItems])
 
   const sorted = Array.isArray(items)
-  ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
-  : [];
+    ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
+    : [];
 
 
   return (
@@ -59,6 +65,71 @@ export default function MainPage() {
             </div>
 
             <div className="main-body">
+              <div className="filter-box" style={{marginBottom: '1rem'}}>
+                <div className="section-title">Filter Items</div>
+
+                <label className="field">
+                  <span className="field__label">Item Name</span>
+                  <input
+                    className="field__input"
+                    value={filterName}
+                    onChange={(e) => setFilterName(e.target.value)}
+                    placeholder="Search by name"
+                  />
+                </label>
+
+                <label className="field">
+                  <span className="field__label">Category</span>
+                  <select
+                    className="field__input"
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Keys">Keys</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+
+                <label className="field">
+                  <span className="field__label">Location</span>
+                  <input
+                    className="field__input"
+                    value={filterLocation}
+                    onChange={(e) => setFilterLocation(e.target.value)}
+                    placeholder="Search by location"
+                  />
+                </label>
+
+                <button
+                  className="btn"
+                  type="button"
+                  onClick={async () => {
+                    const params = new URLSearchParams();
+                    params.append("status", "found");
+
+                    if (filterName.trim()) params.append("search", filterName.trim());
+                    if (filterCategory) params.append("category", filterCategory);
+                    if (filterLocation.trim()) params.append("location", filterLocation.trim());
+
+                    try {
+                      const response = await fetch(
+                        `http://127.0.0.1:8000/api/items/?${params.toString()}`
+                      );
+                      const data = await response.json();
+                      setItems(data);
+                    } catch (err) {
+                      console.error("Filter fetch failed:", err);
+                    }
+                  }}
+                >
+                  Apply Filters
+                </button>
+              </div>
+
               <div className="main-list">
                 <div className="section-title">Found Items</div>
 
