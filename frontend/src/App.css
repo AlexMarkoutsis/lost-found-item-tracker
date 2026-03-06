@@ -255,9 +255,13 @@
   border: 1px solid #111;
   padding: 8px;
   font-size: 12px;
-  background: #fff;
+  background: #D4AF37;
   border-radius: 12px;
 
+}
+
+.list-item:hover {
+  background-color: #b9972f
 }
 
 .list-item--empty {

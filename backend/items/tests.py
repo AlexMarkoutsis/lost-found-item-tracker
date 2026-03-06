@@ -3,7 +3,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 """
-Make sure the porjects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
+Make sure the projects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
 
 Tests can be ran from terminal while in the backend directory
 
