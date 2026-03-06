@@ -94,7 +94,7 @@ class AuthApiTests(TestCase):
         User.objects.create_user(username="user@email.com", password="Correct")
 
         payload = {
-            "username": "user@email.com",
+            "email": "user@email.com",
             "password": "Correct",
         }
 
@@ -111,7 +111,7 @@ class AuthApiTests(TestCase):
         User.objects.create_user(username="user@email.com", password="Correct")
 
         payload = {
-            "username": "user@emial.com",
+            "email": "user@emial.com",
             "password": "Wrong",
         }
 
@@ -121,7 +121,7 @@ class AuthApiTests(TestCase):
 
     def test_login_fails_with_nonexistent_user(self):
         payload = {
-            "username": "doesnotexist@email.com",
+            "email": "doesnotexist@email.com",
             "password": "Password",
         }
 
