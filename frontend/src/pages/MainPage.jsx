@@ -33,12 +33,6 @@ export default function MainPage() {
   const [filterLocation, setFilterLocation] = useState('');
 
 
-  // Item filtering
-  const [filterName, setFilterName] = useState('');
-  const [filterCategory, setFilterCategory] = useState('');
-  const [filterLocation, setFilterLocation] = useState('');
-
-
   // Fetch real items from Django
   useEffect(() => {
     async function loadItems() {

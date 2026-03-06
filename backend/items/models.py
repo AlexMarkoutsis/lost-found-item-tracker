@@ -35,7 +35,6 @@ class Item(models.Model):
     Matches DR-01 through DR-07.
     """
 
-    objects = None
     STATUS_CHOICES = [
         ('lost', 'Lost'),
         ('found', 'Found'),

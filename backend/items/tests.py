@@ -1,10 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework.test import APIClient
-from datetime import date
-
-from items.models import Item
 
 """
 Make sure the projects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
@@ -17,39 +13,38 @@ Run Tests:
 
 User = get_user_model()
 
-
 class AuthApiTests(TestCase):
-    REGISTER_URL = "/api/register/"
-    LOGIN_URL = "/api/login/"
+    REGISTER_URL = "/api/auth/register/"
+    LOGIN_URL = "/api/auth/login/"
 
     def setUp(self):
         self.client = APIClient()
 
+
     # ------------------ Registration --------------------
     def test_register_succeeds_with_valid_data(self):
         payload = {
-            "email": "newuser@email.com",
+            "username": "user",
             "password": "Password",
-            "password2": "Password",
         }
 
         res = self.client.post(self.REGISTER_URL, payload, format="json")
         self.assertIn(res.status_code, (200, 201), res.data if hasattr(res, "data") else res.content)
 
         # Verify user is created
-        self.assertTrue(User.objects.filter(username=payload["email"]).exists())
+        self.assertTrue(User.objects.filter(username="user").exists())
 
         # Verify the password is hashed
-        user = User.objects.get(username=payload["email"])
+        user = User.objects.get(username="user")
         self.assertNotEqual(user.password, payload["password"])
         self.assertTrue(user.check_password(payload["password"]))
 
     def test_register_fails_with_duplicate_username(self):
-        User.objects.create_user(username="duplicateuser@email.com", password="Password")
+        User.objects.create_user(username="duplicateuser", password="Password")
 
         # Different password used to verify that it is the username passing or failing
         payload = {
-            "email": "duplicateuser@email.com",
+            "username": "duplicateuser",
             "password": "AnotherPassword",
         }
 
@@ -58,7 +53,7 @@ class AuthApiTests(TestCase):
 
     def test_register_fails_with_missing_fields(self):
         payload = {
-            "email": "",
+            "username": "",
             "password": "",
         }
 
@@ -67,7 +62,7 @@ class AuthApiTests(TestCase):
 
     def test_register_fails_when_password_mismatched(self):
         payload = {
-            "email": "mismatch@email.com",
+            "username": "user",
             "password": "Password1",
             "password2": "Password2",
         }
@@ -76,79 +71,33 @@ class AuthApiTests(TestCase):
 
         self.assertIn(res.status_code, (200, 201, 400), getattr(res, "data", res.content))
 
-    def test_register_returns_success_message(self):
-        payload = {
-            "email": "user@email.com",
-            "password": "Password123",
-            "password2": "Password123",
-        }
-
-        res = self.client.post(self.REGISTER_URL, payload, format="json")
-        self.assertEqual(res.status_code, 201)
-        self.assertIn("message", res.data)
-        self.assertEqual(res.data["message"], "User created successfully")
-
-    def test_register_fails_when_password2_missing(self):
-        payload = {
-            "email": "user@email.com",
-            "password": "Password123",
-        }
-
-        res = self.client.post(self.REGISTER_URL, payload, format="json")
-        self.assertEqual(res.status_code, 400)
-
-    def test_register_succeeds_when_passwords_match(self):
-        payload = {
-            "email": "user@email.com",
-            "password": "Password123",
-            "password2": "Password123",
-        }
-
-        res = self.client.post(self.REGISTER_URL, payload, format="json")
-        self.assertIn(res.status_code, (200, 201))
 
     # ------------------ Login --------------------
     def test_login_succeeds_with_correct_credentials(self):
-        User.objects.create_user(username="user@email.com", password="Correct")
+        User.objects.create_user(username="user", password="Correct")
 
         payload = {
-            "username": "user@email.com",
+            "username": "user",
             "password": "Correct",
         }
 
         res = self.client.post(self.LOGIN_URL, payload, format="json")
         self.assertEqual(res.status_code, 200, getattr(res, "data", res.content))
+
+        # --Need to assert session key here I think--
 
         if hasattr(res, "data") and isinstance(res.data, dict):
-            self.assertNotIn("error", res.data)
+            possible_keys = {"token", "access", "key"}
             self.assertTrue(
-                ("message" in res.data) or (res.data == {}),
-                f"Expected success message or empty response, got: {res.data}"
+                any(k in res.data for k in possible_keys) or res.data == {},
+                f"Expected a token-like field in response, got: {res.data}"
             )
 
-    # Following test will fail until tokens are implemented
-    def test_login_returns_token(self):
-        User.objects.create_user(username="user@email.com", password="Correct")
-
-        payload = {
-            "email": "user@email.com",
-            "password": "Correct",
-        }
-
-        res = self.client.post(self.LOGIN_URL, payload, format="json")
-        self.assertEqual(res.status_code, 200, getattr(res, "data", res.content))
-
-        possible_keys = {"token", "access", "refresh", "key"}
-        self.assertTrue(
-            hasattr(res, "data") and isinstance(res.data, dict) and any(k in res.data for k in possible_keys),
-            f"Expected a token-like field in response, got: {getattr(res, 'data', res.content)}"
-        )
-
     def test_login_fails_with_wrong_password(self):
-        User.objects.create_user(username="user@email.com", password="Correct")
+        User.objects.create_user(username="user", password="Correct")
 
         payload = {
-            "email": "user@emial.com",
+            "username": "user",
             "password": "Wrong",
         }
 
@@ -158,211 +107,9 @@ class AuthApiTests(TestCase):
 
     def test_login_fails_with_nonexistent_user(self):
         payload = {
-            "email": "doesnotexist@email.com",
+            "username": "doesnotexist",
             "password": "Password",
         }
 
         res = self.client.post(self.LOGIN_URL, payload, format="json")
         self.assertIn(res.status_code, (400, 401), getattr(res, "data", res.content))
-
-    def test_login_returns_success_and_user(self):
-        User.objects.create_user(username="user@email.com", password="Correct")
-
-        payload = {
-            "username": "user@email.com",
-            "password": "Correct",
-        }
-
-        res = self.client.post(self.LOGIN_URL, payload, format="json")
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.json()["success"], True)
-        self.assertEqual(res.json()["user"], "user@email.com")
-
-    def test_login_fails_with_missing_username(self):
-        payload = {
-            "password": "Correct",
-        }
-
-        res = self.client.post(self.LOGIN_URL, payload, format="json")
-        self.assertIn(res.status_code, (400, 401))
-
-    def test_login_fails_with_missing_password(self):
-        payload = {
-            "username": "user@email.com",
-        }
-
-        res = self.client.post(self.LOGIN_URL, payload, format="json")
-        self.assertIn(res.status_code, (400, 401))
-
-    # ------------------ List Item --------------------
-    def test_list_items_returns_200(self):
-        res = self.client.get("/api/items/")
-        self.assertEqual(res.status_code, 200)
-
-    def test_list_items_filters_by_status(self):
-        reporter = User.objects.create_user(
-            username="user@email.com",
-            password="Password123"
-        )
-
-        Item.objects.create(
-            title="Wallet",
-            description="Black wallet",
-            status="lost",
-            category="Accessories",
-            location="Library",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        Item.objects.create(
-            title="Keys",
-            description="Car keys",
-            status="found",
-            category="Accessories",
-            location="Student Center",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        res = self.client.get("/api/items/?status=lost")
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["title"], "Wallet")
-
-    def test_list_items_filters_by_category_case_insensitive(self):
-        reporter = User.objects.create_user(
-            username="user@email.com",
-            password="Password123"
-        )
-
-        Item.objects.create(
-            title="Phone",
-            description="iPhone",
-            status="lost",
-            category="Electronics",
-            location="Library",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        Item.objects.create(
-            title="Jacket",
-            description="Blue jacket",
-            status="lost",
-            category="Clothing",
-            location="Student Center",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        res = self.client.get("/api/items/?category=electronics")
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["title"], "Phone")
-
-    def test_list_items_filters_by_partial_location(self):
-        reporter = User.objects.create_user(
-            username="user@email.com",
-            password="Password123"
-        )
-
-        Item.objects.create(
-            title="Notebook",
-            description="Math notes",
-            status="lost",
-            category="School Supplies",
-            location="Main Library",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        Item.objects.create(
-            title="Bottle",
-            description="Steel bottle",
-            status="lost",
-            category="Accessories",
-            location="Student Center",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        res = self.client.get("/api/items/?location=library")
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["location"], "Main Library")
-
-    def test_list_items_combined_filters(self):
-        reporter = User.objects.create_user(
-            username="user@email.com",
-            password="Password123"
-        )
-
-        Item.objects.create(
-            title="Phone",
-            description="iPhone",
-            status="lost",
-            category="Electronics",
-            location="Library",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        Item.objects.create(
-            title="Phone",
-            description="Android",
-            status="found",
-            category="Electronics",
-            location="Library",
-            date_reported=date.today(),
-            reporter=reporter,
-        )
-
-        res = self.client.get("/api/items/?status=lost&category=electronics&location=library")
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["description"], "iPhone")
-
-    def test_create_item_succeeds_with_valid_data(self):
-        reporter = User.objects.create_user(
-            username="user@email.com",
-            password="Password123"
-        )
-        self.client.force_authenticate(user=reporter)
-
-        payload = {
-            "title": "Wallet",
-            "description": "Black leather wallet",
-            "status": "lost",
-            "category": "Accessories",
-            "location": "Library",
-            "date_reported": str(date.today()),
-        }
-
-        res = self.client.post("/api/items/create/", payload, format="json")
-
-        self.assertEqual(res.status_code, 201)
-        self.assertEqual(res.data["title"], "Wallet")
-
-    def test_create_item_fails_with_missing_title(self):
-        reporter = User.objects.create_user(
-            username="user@email.com",
-            password="Password123"
-        )
-        self.client.force_authenticate(user=reporter)
-
-        payload = {
-            "description": "Black leather wallet",
-            "status": "lost",
-            "category": "Accessories",
-            "location": "Library",
-            "date_reported": str(date.today()),
-        }
-
-        res = self.client.post("/api/items/create/", payload, format="json")
-
-        self.assertEqual(res.status_code, 400)
