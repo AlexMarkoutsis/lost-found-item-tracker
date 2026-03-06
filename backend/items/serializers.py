@@ -9,12 +9,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ["role"]
 
+
 class UserSerializer(serializers.ModelSerializer):
-    profile = UserProfileSerializer()
+    profile = UserProfileSerializer(read_only=True)
 
     class Meta:
         model = User
         fields = ["id", "username", "password", "profile"]
+        extra_kwargs = {
+            "password": {"write_only": True}
+        }
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -22,11 +26,19 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
+        password = validated_data.pop("password")
         user = User(**validated_data)
         user.is_active = True
         user.set_password(password)
         user.save()
+
+        # Create profile automatically
+        UserProfile.objects.create(
+            user=user,
+            display_name=user.username,
+            role="standard"
+        )
+
         return user
 
 
@@ -38,7 +50,10 @@ class NoteSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
+    reporter_username = serializers.CharField(source="reporter.username", read_only=True)
+
     class Meta:
         model = Item
         fields = '__all__'
         read_only_fields = ["reporter"]
+

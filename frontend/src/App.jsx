@@ -71,9 +71,7 @@ export default function App() {
             <Route
               path="/"
               element={
-                <ProtectedRoute>
-                  <Home/>
-                </ProtectedRoute>
+                <Navigate to="/login" replace />
               }
             />
 
@@ -91,6 +89,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ItemSubmissionPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/item-details"
+              element={
+                <ProtectedRoute>
+                  <ItemDetails/>
                 </ProtectedRoute>
               }
             />
