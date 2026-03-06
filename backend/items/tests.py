@@ -1,6 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework.test import APIClient
+from datetime import date
+
+from items.models import Item
 
 """
 Make sure the projects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
@@ -26,6 +30,7 @@ class AuthApiTests(TestCase):
         payload = {
             "email": "newuser@email.com",
             "password": "Password",
+            "password2": "Password",
         }
 
         res = self.client.post(self.REGISTER_URL, payload, format="json")
@@ -71,12 +76,43 @@ class AuthApiTests(TestCase):
 
         self.assertIn(res.status_code, (200, 201, 400), getattr(res, "data", res.content))
 
+    def test_register_returns_success_message(self):
+        payload = {
+            "email": "user@email.com",
+            "password": "Password123",
+            "password2": "Password123",
+        }
+
+        res = self.client.post(self.REGISTER_URL, payload, format="json")
+        self.assertEqual(res.status_code, 201)
+        self.assertIn("message", res.data)
+        self.assertEqual(res.data["message"], "User created successfully")
+
+    def test_register_fails_when_password2_missing(self):
+        payload = {
+            "email": "user@email.com",
+            "password": "Password123",
+        }
+
+        res = self.client.post(self.REGISTER_URL, payload, format="json")
+        self.assertEqual(res.status_code, 400)
+
+    def test_register_succeeds_when_passwords_match(self):
+        payload = {
+            "email": "user@email.com",
+            "password": "Password123",
+            "password2": "Password123",
+        }
+
+        res = self.client.post(self.REGISTER_URL, payload, format="json")
+        self.assertIn(res.status_code, (200, 201))
+
     # ------------------ Login --------------------
     def test_login_succeeds_with_correct_credentials(self):
         User.objects.create_user(username="user@email.com", password="Correct")
 
         payload = {
-            "email": "user@email.com",
+            "username": "user@email.com",
             "password": "Correct",
         }
 
@@ -90,6 +126,7 @@ class AuthApiTests(TestCase):
                 f"Expected success message or empty response, got: {res.data}"
             )
 
+    # Following test will fail until tokens are implemented
     def test_login_returns_token(self):
         User.objects.create_user(username="user@email.com", password="Correct")
 
@@ -127,3 +164,205 @@ class AuthApiTests(TestCase):
 
         res = self.client.post(self.LOGIN_URL, payload, format="json")
         self.assertIn(res.status_code, (400, 401), getattr(res, "data", res.content))
+
+    def test_login_returns_success_and_user(self):
+        User.objects.create_user(username="user@email.com", password="Correct")
+
+        payload = {
+            "username": "user@email.com",
+            "password": "Correct",
+        }
+
+        res = self.client.post(self.LOGIN_URL, payload, format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["success"], True)
+        self.assertEqual(res.json()["user"], "user@email.com")
+
+    def test_login_fails_with_missing_username(self):
+        payload = {
+            "password": "Correct",
+        }
+
+        res = self.client.post(self.LOGIN_URL, payload, format="json")
+        self.assertIn(res.status_code, (400, 401))
+
+    def test_login_fails_with_missing_password(self):
+        payload = {
+            "username": "user@email.com",
+        }
+
+        res = self.client.post(self.LOGIN_URL, payload, format="json")
+        self.assertIn(res.status_code, (400, 401))
+
+    # ------------------ List Item --------------------
+    def test_list_items_returns_200(self):
+        res = self.client.get("/api/items/")
+        self.assertEqual(res.status_code, 200)
+
+    def test_list_items_filters_by_status(self):
+        reporter = User.objects.create_user(
+            username="user@email.com",
+            password="Password123"
+        )
+
+        Item.objects.create(
+            title="Wallet",
+            description="Black wallet",
+            status="lost",
+            category="Accessories",
+            location="Library",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        Item.objects.create(
+            title="Keys",
+            description="Car keys",
+            status="found",
+            category="Accessories",
+            location="Student Center",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        res = self.client.get("/api/items/?status=lost")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]["title"], "Wallet")
+
+    def test_list_items_filters_by_category_case_insensitive(self):
+        reporter = User.objects.create_user(
+            username="user@email.com",
+            password="Password123"
+        )
+
+        Item.objects.create(
+            title="Phone",
+            description="iPhone",
+            status="lost",
+            category="Electronics",
+            location="Library",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        Item.objects.create(
+            title="Jacket",
+            description="Blue jacket",
+            status="lost",
+            category="Clothing",
+            location="Student Center",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        res = self.client.get("/api/items/?category=electronics")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]["title"], "Phone")
+
+    def test_list_items_filters_by_partial_location(self):
+        reporter = User.objects.create_user(
+            username="user@email.com",
+            password="Password123"
+        )
+
+        Item.objects.create(
+            title="Notebook",
+            description="Math notes",
+            status="lost",
+            category="School Supplies",
+            location="Main Library",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        Item.objects.create(
+            title="Bottle",
+            description="Steel bottle",
+            status="lost",
+            category="Accessories",
+            location="Student Center",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        res = self.client.get("/api/items/?location=library")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]["location"], "Main Library")
+
+    def test_list_items_combined_filters(self):
+        reporter = User.objects.create_user(
+            username="user@email.com",
+            password="Password123"
+        )
+
+        Item.objects.create(
+            title="Phone",
+            description="iPhone",
+            status="lost",
+            category="Electronics",
+            location="Library",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        Item.objects.create(
+            title="Phone",
+            description="Android",
+            status="found",
+            category="Electronics",
+            location="Library",
+            date_reported=date.today(),
+            reporter=reporter,
+        )
+
+        res = self.client.get("/api/items/?status=lost&category=electronics&location=library")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]["description"], "iPhone")
+
+    def test_create_item_succeeds_with_valid_data(self):
+        reporter = User.objects.create_user(
+            username="user@email.com",
+            password="Password123"
+        )
+        self.client.force_authenticate(user=reporter)
+
+        payload = {
+            "title": "Wallet",
+            "description": "Black leather wallet",
+            "status": "lost",
+            "category": "Accessories",
+            "location": "Library",
+            "date_reported": str(date.today()),
+        }
+
+        res = self.client.post("/api/items/create/", payload, format="json")
+
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.data["title"], "Wallet")
+
+    def test_create_item_fails_with_missing_title(self):
+        reporter = User.objects.create_user(
+            username="user@email.com",
+            password="Password123"
+        )
+        self.client.force_authenticate(user=reporter)
+
+        payload = {
+            "description": "Black leather wallet",
+            "status": "lost",
+            "category": "Accessories",
+            "location": "Library",
+            "date_reported": str(date.today()),
+        }
+
+        res = self.client.post("/api/items/create/", payload, format="json")
+
+        self.assertEqual(res.status_code, 400)
