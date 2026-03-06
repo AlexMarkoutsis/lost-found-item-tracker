@@ -119,18 +119,17 @@ User = get_user_model()
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
 def register_view(request):
     username = request.data.get("email")
     password = request.data.get("password")
     password2 = request.data.get("password2")
 
     # ---- Missing fields ----
-    if not username or not password or not password2:
-        return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+    if not username or not password:
+        return Response({"error": "Missing username or password"}, status=status.HTTP_400_BAD_REQUEST)
 
     # ---- Password mismatch ----
-    if password != password2:
+    if password2 is not None and password != password2:
         return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
 
     # ---- Duplicate user ----
