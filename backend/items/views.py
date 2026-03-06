@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.http import JsonResponse
 import json
 
@@ -113,3 +113,31 @@ def create_item(request):
         serializer.save(reporter=request.user)
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+User = get_user_model()
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def register_view(request):
+    username = request.data.get("email")
+    password = request.data.get("password")
+    password2 = request.data.get("password2")
+
+    # ---- Missing fields ----
+    if not username or not password or not password2:
+        return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # ---- Password mismatch ----
+    if password != password2:
+        return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # ---- Duplicate user ----
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "User already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # ---- Create user ----
+    User.objects.create_user(username=username, password=password)
+
+    return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
