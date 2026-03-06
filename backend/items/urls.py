@@ -4,9 +4,7 @@ from .views import (
     list_items,
     NoteListCreate,
     NoteDelete,
-    CreateUserView,
-    create_item,
-    register_view,
+    CreateUserView, create_item,
 )
 
 urlpatterns = [
@@ -18,8 +16,4 @@ urlpatterns = [
     # Notes
     path("notes/", NoteListCreate.as_view(), name="note-list"),
     path("notes/<int:pk>/delete/", NoteDelete.as_view(), name="note-delete"),
-
-    path('login/', login_view),
-    path('items/', list_items),
-    path('register/', register_view),
 ]
