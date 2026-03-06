@@ -112,6 +112,7 @@ User = get_user_model()
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def register_view(request):
     username = request.data.get("email")
     password = request.data.get("password")

@@ -1,3 +1,12 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 #root {
   min-height: 100vh;
 }
@@ -140,14 +149,15 @@
 .field__input:focus,
 .field__textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.15);
+  border-color: #111;
+  box-shadow: none;
   filter: brightness(1);
 }
 
 /* Give the "press" feel when clicking on input */
 .field__input:active,
 .field__textarea:active {
-  transform: scale(0.995);
+  transform: none;
 }
 
 .field__hint {
