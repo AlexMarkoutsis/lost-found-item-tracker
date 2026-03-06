@@ -13,18 +13,18 @@ Run Tests:
 
 User = get_user_model()
 
+
 class AuthApiTests(TestCase):
-    REGISTER_URL = "/api/auth/register/"
-    LOGIN_URL = "/api/auth/login/"
+    REGISTER_URL = "/api/register/"
+    LOGIN_URL = "/api/login/"
 
     def setUp(self):
         self.client = APIClient()
 
-
     # ------------------ Registration --------------------
     def test_register_succeeds_with_valid_data(self):
         payload = {
-            "username": "user",
+            "email": "newuser@email.com",
             "password": "Password",
         }
 
@@ -32,19 +32,19 @@ class AuthApiTests(TestCase):
         self.assertIn(res.status_code, (200, 201), res.data if hasattr(res, "data") else res.content)
 
         # Verify user is created
-        self.assertTrue(User.objects.filter(username="user").exists())
+        self.assertTrue(User.objects.filter(username=payload["email"]).exists())
 
         # Verify the password is hashed
-        user = User.objects.get(username="user")
+        user = User.objects.get(username=payload["email"])
         self.assertNotEqual(user.password, payload["password"])
         self.assertTrue(user.check_password(payload["password"]))
 
     def test_register_fails_with_duplicate_username(self):
-        User.objects.create_user(username="duplicateuser", password="Password")
+        User.objects.create_user(username="duplicateuser@email.com", password="Password")
 
         # Different password used to verify that it is the username passing or failing
         payload = {
-            "username": "duplicateuser",
+            "email": "duplicateuser@email.com",
             "password": "AnotherPassword",
         }
 
@@ -53,7 +53,7 @@ class AuthApiTests(TestCase):
 
     def test_register_fails_with_missing_fields(self):
         payload = {
-            "username": "",
+            "email": "",
             "password": "",
         }
 
@@ -62,7 +62,7 @@ class AuthApiTests(TestCase):
 
     def test_register_fails_when_password_mismatched(self):
         payload = {
-            "username": "user",
+            "email": "mismatch@email.com",
             "password": "Password1",
             "password2": "Password2",
         }
@@ -71,33 +71,47 @@ class AuthApiTests(TestCase):
 
         self.assertIn(res.status_code, (200, 201, 400), getattr(res, "data", res.content))
 
-
     # ------------------ Login --------------------
     def test_login_succeeds_with_correct_credentials(self):
-        User.objects.create_user(username="user", password="Correct")
+        User.objects.create_user(username="user@email.com", password="Correct")
 
         payload = {
-            "username": "user",
+            "email": "user@email.com",
             "password": "Correct",
         }
 
         res = self.client.post(self.LOGIN_URL, payload, format="json")
         self.assertEqual(res.status_code, 200, getattr(res, "data", res.content))
 
-        # --Need to assert session key here I think--
-
         if hasattr(res, "data") and isinstance(res.data, dict):
-            possible_keys = {"token", "access", "key"}
+            self.assertNotIn("error", res.data)
             self.assertTrue(
-                any(k in res.data for k in possible_keys) or res.data == {},
-                f"Expected a token-like field in response, got: {res.data}"
+                ("message" in res.data) or (res.data == {}),
+                f"Expected success message or empty response, got: {res.data}"
             )
 
-    def test_login_fails_with_wrong_password(self):
-        User.objects.create_user(username="user", password="Correct")
+    def test_login_returns_token(self):
+        User.objects.create_user(username="user@email.com", password="Correct")
 
         payload = {
-            "username": "user",
+            "email": "user@email.com",
+            "password": "Correct",
+        }
+
+        res = self.client.post(self.LOGIN_URL, payload, format="json")
+        self.assertEqual(res.status_code, 200, getattr(res, "data", res.content))
+
+        possible_keys = {"token", "access", "refresh", "key"}
+        self.assertTrue(
+            hasattr(res, "data") and isinstance(res.data, dict) and any(k in res.data for k in possible_keys),
+            f"Expected a token-like field in response, got: {getattr(res, 'data', res.content)}"
+        )
+
+    def test_login_fails_with_wrong_password(self):
+        User.objects.create_user(username="user@email.com", password="Correct")
+
+        payload = {
+            "email": "user@emial.com",
             "password": "Wrong",
         }
 
@@ -107,7 +121,7 @@ class AuthApiTests(TestCase):
 
     def test_login_fails_with_nonexistent_user(self):
         payload = {
-            "username": "doesnotexist",
+            "email": "doesnotexist@email.com",
             "password": "Password",
         }
 
