@@ -1,15 +1,53 @@
-import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AppContext } from '../App.jsx'
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function RegistrationPage() {
-  const navigate = useNavigate()
-  const { setCurrentUser } = useContext(AppContext)
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [rePassword, setRePassword] = useState('')
-  const mismatch = password.length > 0 && rePassword.length > 0 && password !== rePassword
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+
+  const mismatch =
+    password.length > 0 &&
+    rePassword.length > 0 &&
+    password !== rePassword;
+
+  const canSubmit = username.trim() && password && !mismatch;
+
+  async function handleRegister() {
+    try {
+      const response = await fetch("/api/auth/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username.trim(),
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.username) {
+          alert(data.username[0]);
+        } else {
+          alert(data.error || "Registration failed");
+        }
+        return;
+      }
+
+      // Registration succeeded > now log the user in
+      await login(username.trim(), password);
+
+      navigate("/main");
+    } catch (err) {
+      console.error("Registration error:", err);
+      alert("Something went wrong during registration.");
+    }
+  }
 
   return (
     <div className="screen">
@@ -55,46 +93,21 @@ export default function RegistrationPage() {
               />
             </label>
 
-            {mismatch ? <p className="error">Passwords do not match.</p> : null}
+            {mismatch && <p className="error">Passwords do not match.</p>}
 
             <div className="button-col">
-              {/* Create and Login Button -> Main Page*/}
               <button
                 className="btn"
-                disabled={!username.trim() || !password || mismatch}
-                onClick={async () => {
-                  try {
-                    const response = await fetch("http://127.0.0.1:8000/api/auth/register/", {
-                      method: "POST",
-                      headers: {"Content-Type": "application/json"},
-                      body: JSON.stringify({
-                        username: username.trim(),
-                        password: password
-                      }),
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                      setCurrentUser(data.username);
-                      navigate('/main');
-                    } else {
-                      if (data.username) {
-                        alert(data.username[0]); // "Username is already taken."
-                        } else {
-                        alert(data.error || "Registration failed");
-                      }
-                    }
-                  } catch (err) {
-                    console.error("Registration error:", err);
-                    alert("Something went wrong during registration.");
-                  }
-                }}
+                disabled={!canSubmit}
+                onClick={handleRegister}
               >
                 Create and Login
               </button>
-              {/* Back -> Login Page*/}
-              <button className="btn" onClick={() => navigate('/login')}>
+
+              <button
+                className="btn btn--secondary"
+                onClick={() => navigate("/login")}
+              >
                 Back
               </button>
             </div>
@@ -102,5 +115,5 @@ export default function RegistrationPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

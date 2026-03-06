@@ -1,57 +1,38 @@
+import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import items from "../items.js";
-import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants";
-import { useState, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 
+export default function ProtectedRoute({ children }) {
+  const { user, setUser, loadUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
 
-function ProtectedRoute({ children }) {
-    const [isAuthorized, setIsAuthorized] = useState(null);
+    if (user === null && !localStorage.getItem("access")) {
+    return <Navigate to="/login" replace/>;
+  }
 
-    useEffect(() => {
-        auth().catch(() => setIsAuthorized(false))
-    }, [])
+  useEffect(() => {
+  const token = localStorage.getItem("access");
+  if (!token) {
+    setLoading(false);
+    return;
+  }
 
-    const refreshToken = async () => {
-        const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-        try {
-            const res = await items.post("/api/token/refresh/", {
-                refresh: refreshToken,
-            });
-            if (res.status === 200) {
-                localStorage.setItem(ACCESS_TOKEN, res.data.access)
-                setIsAuthorized(true)
-            } else {
-                setIsAuthorized(false)
-            }
-        } catch (error) {
-            console.log(error);
-            setIsAuthorized(false);
-        }
-    };
-
-    const auth = async () => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        if (!token) {
-            setIsAuthorized(false);
-            return;
-        }
-        const decoded = jwtDecode(token);
-        const tokenExpiration = decoded.exp;
-        const now = Date.now() / 1000;
-
-        if (tokenExpiration < now) {
-            await refreshToken();
-        } else {
-            setIsAuthorized(true);
-        }
-    };
-
-    if (isAuthorized === null) {
-        return <div>Loading...</div>;
+  async function verify() {
+    if (!user) {
+      const loaded = await loadUser();
+      setUser(loaded);
     }
+    setLoading(false);
+  }
 
-    return isAuthorized ? children : <Navigate to="/login" />;
+  verify();
+}, [user, setUser, loadUser]);
+
+
+  if (loading) return <div>Loading...</div>;
+
+  const token = localStorage.getItem("access");
+  if (!token) return <Navigate to="/login" replace />;
+
+  return children;
 }
-
-export default ProtectedRoute;

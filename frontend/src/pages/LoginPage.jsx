@@ -1,14 +1,23 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppContext } from '../App.jsx'
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "../constants.js";
+import { AuthContext } from '../context/AuthContext'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { setCurrentUser } = useContext(AppContext)
+  const { setUser, login } = useContext(AuthContext)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  async function handleLogin() {
+    try {
+      const user = await login(username, password)   // calls /api/token/ then /api/auth/me/
+      setUser(user)                                   // store user in global context
+      navigate('/main')                               // redirect
+    } catch (err) {
+      alert("Invalid credentials")
+    }
+  }
 
   return (
     <div className="screen">
@@ -43,35 +52,15 @@ export default function LoginPage() {
             </label>
 
             <div className="button-col">
-              {/* Login button -> Main Page*/}
-              <button
-                className="btn"
-                onClick={async () => {
-                  const response = await fetch("http://127.0.0.1:8000/api/auth/token/", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({username, password}),
-                  });
-
-                  const data = await response.json();
-
-                  if (response.ok) {
-                    localStorage.setItem(ACCESS_TOKEN, data.access)
-                    localStorage.setItem(REFRESH_TOKEN, data.refresh)
-                    setCurrentUser(data.user || username);
-                    navigate('/main');
-                  } else {
-                    alert(data.error || "Login failed");
-                  }
-                }}
-              >
+              <button className="btn" onClick={handleLogin}>
                 login
               </button>
-              {/* Register Button -> Registration Page*/}
+
               <button className="btn" onClick={() => navigate('/register')}>
                 register
               </button>
             </div>
+
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppContext } from '../App.jsx'
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../constants.js";
+import {AuthContext} from "../context/AuthContext.jsx";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10)
@@ -9,7 +9,7 @@ function todayISO() {
 
 export default function ItemSubmissionPage() {
   const navigate = useNavigate()
-  const { setItems } = useContext(AppContext)
+  const { user } = useContext(AuthContext);
 
   const today = useMemo(() => todayISO(), [])
 
@@ -37,7 +37,7 @@ export default function ItemSubmissionPage() {
 
                 try {
                   const access_token = localStorage.getItem(ACCESS_TOKEN)
-                  const response = await fetch("http://127.0.0.1:8000/api/items/create/", {
+                  const response = await fetch("/api/items/create/", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
@@ -50,16 +50,14 @@ export default function ItemSubmissionPage() {
                       location: location.trim(),
                       date_reported: dateFound,
                       status: "found",
-                      reporter: 1   // TODO: replace with real user ID (JWT -or- authentication token needed)
+                      reporter: user.id
                     }),
                   });
 
                   const data = await response.json();
 
                   if (response.ok) {
-
-                    setItems((prev) => [data, ...prev]);
-                    navigate("/main");
+                    navigate("/main", { state: { refresh: true } });
                   } else {
                     alert("Failed to submit item: " + JSON.stringify(data));
                   }
