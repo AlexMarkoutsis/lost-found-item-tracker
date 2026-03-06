@@ -1,6 +1,7 @@
 import {useContext, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import default_pfp from "../assets/default_pfp.svg";
 
 function formatItem(item) {
   const header = item.title || item.itemName || 'Untitled Item'
@@ -53,6 +54,9 @@ export default function MainPage() {
     ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
     : [];
 
+  const handlePfpClick = () => {
+    navigate(`/users/${user.id}`);
+  };
 
   return (
     <div className="screen">
@@ -63,7 +67,10 @@ export default function MainPage() {
           <div className="frame__inner">
             <div className="main-header">
               <div className="main-header__left">PantherFind</div>
-              <div className="main-header__right">({user?.username})</div>
+              <div className="main-header__right">
+                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp" />
+                ({user?.username})
+              </div>
             </div>
 
             <div className="main-body">

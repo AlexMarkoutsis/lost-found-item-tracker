@@ -12,6 +12,8 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
+import UserProfilePage from './pages/UserProfilePage.jsx'
+
 import ItemDetails from './pages/ItemDetails.jsx'
 
 import { AuthProvider } from "./context/AuthContext";
@@ -82,6 +84,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <MainPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/users/:id"
+              element={
+                <ProtectedRoute>
+                  <UserProfilePage/>
                 </ProtectedRoute>
               }
             />

@@ -7,7 +7,7 @@ from .models import Note, Item, UserProfile
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ["role"]
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer()
