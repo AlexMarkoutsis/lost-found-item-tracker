@@ -15,6 +15,8 @@ import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
 import ItemDetails from './pages/ItemDetails.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
 
+import AdminHomePage from './pages/AdminHomePage';
+
 import { AuthProvider } from "./context/AuthContext";
 
 
@@ -81,6 +83,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <MainPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminHomePage/>
                 </ProtectedRoute>
               }
             />
