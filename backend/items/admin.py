@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Item, UserProfile, ActivityLog
+from django.contrib.auth.models import User
 
 
 @admin.register(Item)
@@ -19,3 +20,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 class ActivityLogAdmin(admin.ModelAdmin):
     list_display = ("user", "action", "item", "timestamp")
     list_filter = ("action", "timestamp")
+
+    admin.site.unregister(User)
+
+@admin.register(User)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ("username", "email", "is_staff", "is_superuser", "is_active")
+    list_filter = ("is_staff", "is_superuser", "is_active")
+    search_fields = ("username", "email")
