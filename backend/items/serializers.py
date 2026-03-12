@@ -32,13 +32,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
 
-        # Create profile automatically
-        UserProfile.objects.create(
-            user=user,
-            display_name=user.username,
-            role="standard"
-        )
-
         return user
 
 
