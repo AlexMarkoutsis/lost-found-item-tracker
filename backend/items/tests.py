@@ -202,7 +202,7 @@ class AuthApiTests(TestCase):
 
     # ------------------ List Item --------------------
     def test_list_items_returns_200(self):
-        res = self.client.get("/api/items/")
+        res = self.client.get(self.ITEMS_URL)
         self.assertEqual(res.status_code, 200)
 
     def test_list_items_filters_by_status(self):
@@ -231,7 +231,7 @@ class AuthApiTests(TestCase):
             reporter=reporter,
         )
 
-        res = self.client.get("/api/items/?status=lost")
+        res = self.client.get(f"{self.ITEMS_URL}?status=lost")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 1)
@@ -263,7 +263,7 @@ class AuthApiTests(TestCase):
             reporter=reporter,
         )
 
-        res = self.client.get("/api/items/?category=electronics")
+        res = self.client.get(f"{self.ITEMS_URL}?category=electronics")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 1)
@@ -295,7 +295,7 @@ class AuthApiTests(TestCase):
             reporter=reporter,
         )
 
-        res = self.client.get("/api/items/?location=library")
+        res = self.client.get(f"{self.ITEMS_URL}?location=library")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 1)
@@ -327,7 +327,7 @@ class AuthApiTests(TestCase):
             reporter=reporter,
         )
 
-        res = self.client.get("/api/items/?status=lost&category=electronics&location=library")
+        res = self.client.get(f"{self.ITEMS_URL}?status=lost&category=electronics&location=library")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 1)
@@ -349,7 +349,7 @@ class AuthApiTests(TestCase):
             "date_reported": str(date.today()),
         }
 
-        res = self.client.post("/api/items/create/", payload, format="json")
+        res = self.client.post(self.CREATE_ITEM_URL, payload, format="json")
 
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.data["title"], "Wallet")
@@ -369,6 +369,6 @@ class AuthApiTests(TestCase):
             "date_reported": str(date.today()),
         }
 
-        res = self.client.post("/api/items/create/", payload, format="json")
+        res = self.client.post(self.CREATE_ITEM_URL, payload, format="json")
 
         self.assertEqual(res.status_code, 400)
