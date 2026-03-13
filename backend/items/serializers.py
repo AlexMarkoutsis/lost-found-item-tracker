@@ -44,6 +44,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     reporter_username = serializers.CharField(source="reporter.username", read_only=True)
+    category_name = serializers.CharField(source="category.name", read_only=True)
 
     class Meta:
         model = Item
