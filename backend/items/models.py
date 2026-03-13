@@ -23,6 +23,13 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.display_name
 
+class Category(models.Model):
+    """
+    Category Model to set to Items
+    """
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
@@ -45,7 +52,8 @@ class Item(models.Model):
     # DR-01: Unique system-generated ID (Django auto field)
     title = models.CharField(max_length=200)
     description = models.TextField()
-    category = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    #category = models.CharField(max_length=100)
     location = models.CharField(max_length=200)
 
     # DR-02: Date found or lost

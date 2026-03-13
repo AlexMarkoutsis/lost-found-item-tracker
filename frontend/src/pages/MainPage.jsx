@@ -7,7 +7,7 @@ import default_pfp from "../assets/default_pfp.svg"
 function formatItem(item) {
   const header = item.title || item.itemName || 'Untitled Item'
   const desc = item.description || ''
-  const cat = item.category ? `Category: ${item.category}` : ''
+  const cat = item.category_name ? `Category: ${item.category_name}` : ''
   const where = item.location ? `Location: ${item.location}` : ''
   const when = item.date_found || item.dateFound
     ? `Date found: ${item.date_found || item.dateFound}`
