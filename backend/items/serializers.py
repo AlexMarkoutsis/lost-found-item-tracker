@@ -32,13 +32,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
 
-        # Create profile automatically
-        UserProfile.objects.create(
-            user=user,
-            display_name=user.username,
-            role="standard"
-        )
-
         return user
 
 
@@ -51,6 +44,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     reporter_username = serializers.CharField(source="reporter.username", read_only=True)
+    category_name = serializers.CharField(source="category.name", read_only=True)
 
     class Meta:
         model = Item

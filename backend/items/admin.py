@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Item, UserProfile, ActivityLog
+from .models import Item, UserProfile, ActivityLog, Category
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    list_filter = ("name",)
+    search_fields = ("name",)
 
 
 @admin.register(Item)
