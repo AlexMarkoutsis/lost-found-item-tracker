@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 # from django.contrib.auth.hashers import make_password
-from .models import Note, Item, UserProfile
+from .models import Note, Item, UserProfile, Category
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -50,3 +50,9 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = '__all__'
         read_only_fields = ["reporter"]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
