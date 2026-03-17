@@ -7,7 +7,21 @@ from .models import Note, Item, UserProfile, Category
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        fields = [
+            "display_name",
+            "avatar",
+            "bio",
+            "role",
+            # "is_verified",
+            "preferred_building",
+            "notify_on_match",
+            "notify_on_claim",
+            # "notify_email",
+            "items_reported",
+            "items_claimed",
+            "last_active",
+        ]
+        read_only_fields = ["role", "items_reported", "items_claimed", "last_active"]
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -9,7 +9,13 @@ def create_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.create(
             user=instance,
             display_name=instance.username,
-            role="standard"
+            bio="",
+            preferred_building="",
+            notify_on_match=True,
+            notify_on_claim=True,
+            items_reported=0,
+            items_claimed=0,
+            role="standard",
         )
 
 
