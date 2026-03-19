@@ -6,8 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.db.models import Q
 
-from .serializers import UserSerializer, UserProfileSerializer, NoteSerializer, ItemSerializer
-from .models import Note, Item, UserProfile
+from .serializers import UserSerializer, UserProfileSerializer, NoteSerializer, ItemSerializer, CategorySerializer
+from .models import Note, Item, UserProfile, Category
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
@@ -129,3 +129,8 @@ def create_item(request):
         serializer.save(reporter=request.user)
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+class CategoryListView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

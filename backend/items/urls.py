@@ -5,13 +5,16 @@ from .views import (
     NoteListCreate,
     NoteDelete,
     CreateUserView, create_item,
-    user_profile_get
+    user_profile_get, CategoryListView
 )
 
 urlpatterns = [
     # Items
     path("items/", list_items, name="items"),
     path('items/create/', create_item, name="create-item"),
+
+    # Categories
+    path("categories/", CategoryListView.as_view()),
 
     # User Profile
     # <int:pk> will be the user's id
