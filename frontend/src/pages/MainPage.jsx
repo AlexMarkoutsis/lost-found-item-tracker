@@ -142,17 +142,19 @@ export default function MainPage() {
                 <div className="section-title">Found Items</div>
 
                 <div className="list-box" role="list">
-                  {sorted.length === 0 ? (
-                    <div className="list-item list-item--empty">
-                      No found items yet.
-                    </div>
-                  ) : (
-                    sorted.map((it) => (
-                      <div key={it.id} className="list-item" role="listitem" onClick={() => navigate('/item-details', { state: { item:it } })}>
-                        { formatItem(it) }
+                  <div className="list-box__scroll">
+                    {sorted.length === 0 ? (
+                      <div className="list-item list-item--empty">
+                        No found items yet.
                       </div>
-                    ))
-                  )}
+                    ) : (
+                      sorted.map((it) => (
+                        <div key={it.id} className="list-item" role="listitem" onClick={() => navigate('/item-details', { state: { item:it } })}>
+                          { formatItem(it) }
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
 
