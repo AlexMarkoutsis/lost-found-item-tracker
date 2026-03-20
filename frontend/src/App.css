@@ -244,7 +244,7 @@ html, body {
 
 .main-body {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 320px;
   gap: 16px;
   align-items: start;
 }
@@ -280,11 +280,41 @@ html, body {
 .list-box {
   border: 2px solid #111;
   min-height: 240px;
-  padding: 10px;
+  max-height: 360px;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+/* Scrollable part of list-box*/
+.list-box__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: grid;
   gap: 10px;
-  border-radius: 14px;
+  padding-right: 6px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+  align-content: start;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
 
+  /* Fade in and out at top and bottom of list-box (found items on Main Page)*/
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5px,
+    black calc(100% - 5px),
+    transparent
+  );
 }
 
 .list-box__note {
