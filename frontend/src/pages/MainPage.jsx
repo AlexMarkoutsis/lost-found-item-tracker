@@ -9,9 +9,9 @@ function formatItem(item) {
   const desc = item.description || ''
   const cat = item.category_name ? `Category: ${item.category_name}` : ''
   const where = item.location ? `Location: ${item.location}` : ''
-  const when = item.date_found || item.dateFound
-    ? `Date found: ${item.date_found || item.dateFound}`
-    : ''
+  const when = item.date_reported
+  ? `Date found: ${item.date_reported}`
+  : ''
   const meta = [cat, where, when].filter(Boolean).join(' · ')
 
   return (
@@ -52,8 +52,10 @@ export default function MainPage() {
   }, [setItems])
 
   const sorted = Array.isArray(items)
-    ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
-    : [];
+  ? [...items].sort(
+      (a, b) => new Date(b.date_reported) - new Date(a.date_reported)
+    )
+  : [];
 
   const handlePfpClick = () => {
     navigate(`/users/${user.id}`);
@@ -142,17 +144,19 @@ export default function MainPage() {
                 <div className="section-title">Found Items</div>
 
                 <div className="list-box" role="list">
-                  {sorted.length === 0 ? (
-                    <div className="list-item list-item--empty">
-                      No found items yet.
-                    </div>
-                  ) : (
-                    sorted.map((it) => (
-                      <div key={it.id} className="list-item" role="listitem" onClick={() => navigate('/item-details', { state: { item:it } })}>
-                        { formatItem(it) }
+                  <div className="list-box__scroll">
+                    {sorted.length === 0 ? (
+                      <div className="list-item list-item--empty">
+                        No found items yet.
                       </div>
-                    ))
-                  )}
+                    ) : (
+                      sorted.map((it) => (
+                        <div key={it.id} className="list-item" role="listitem" onClick={() => navigate('/item-details', { state: { item:it } })}>
+                          { formatItem(it) }
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
 
