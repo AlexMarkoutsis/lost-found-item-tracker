@@ -9,9 +9,9 @@ function formatItem(item) {
   const desc = item.description || ''
   const cat = item.category_name ? `Category: ${item.category_name}` : ''
   const where = item.location ? `Location: ${item.location}` : ''
-  const when = item.date_found || item.dateFound
-    ? `Date found: ${item.date_found || item.dateFound}`
-    : ''
+  const when = item.date_reported
+  ? `Date found: ${item.date_reported}`
+  : ''
   const meta = [cat, where, when].filter(Boolean).join(' · ')
 
   return (
@@ -52,8 +52,10 @@ export default function MainPage() {
   }, [setItems])
 
   const sorted = Array.isArray(items)
-    ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
-    : [];
+  ? [...items].sort(
+      (a, b) => new Date(b.date_reported) - new Date(a.date_reported)
+    )
+  : [];
 
   const handlePfpClick = () => {
     navigate(`/users/${user.id}`);
