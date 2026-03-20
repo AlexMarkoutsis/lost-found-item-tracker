@@ -290,6 +290,7 @@ html, body {
   background: #fff;
 }
 
+/* Scrollable part of list-box*/
 .list-box__scroll {
   flex: 1;
   min-height: 0;
@@ -306,6 +307,7 @@ html, body {
   scrollbar-width: thin;
   scrollbar-color: #888 transparent;
 
+  /* Fade in and out at top and bottom of list-box (found items on Main Page)*/
   mask-image: linear-gradient(
     to bottom,
     transparent,
