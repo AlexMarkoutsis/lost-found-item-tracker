@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import default_pfp from "../assets/default_pfp.svg"
+import {ACCESS_TOKEN} from "../constants.js";
 
 
 function formatItem(item) {
@@ -34,6 +35,9 @@ export default function MainPage() {
   const [filterCategory, setFilterCategory] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
 
+  // Categories
+  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
 
   // Fetch real items from Django
   useEffect(() => {
@@ -49,6 +53,17 @@ export default function MainPage() {
     }
 
     loadItems()
+
+    const access_token = localStorage.getItem(ACCESS_TOKEN);
+
+    fetch("/api/categories/", {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error("Failed to load categories:", err));
   }, [setItems])
 
   const sorted = Array.isArray(items)
@@ -91,20 +106,20 @@ export default function MainPage() {
                 </label>
 
                 <label className="field">
-                  <span className="field__label">Category</span>
-                  <select
-                    className="field__input"
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                  >
-                    <option value="">All</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Keys">Keys</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </label>
+                <span className="field__label">Category</span>
+                <select
+                  className="field__input"
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                >
+                  <option value="">(dropdown menu)</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
                 <label className="field">
                   <span className="field__label">Location</span>

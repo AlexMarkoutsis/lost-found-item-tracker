@@ -102,7 +102,7 @@ def list_items(request):
     # Category filter
     category_filter = request.GET.get('category')
     if category_filter:
-        items = items.filter(category__iexact=category_filter)
+        items = items.filter(category_id=category_filter)
 
     # Location filter (partial match)
     location_filter = request.GET.get('location')
