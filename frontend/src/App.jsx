@@ -1,7 +1,5 @@
 import react, { createContext, useMemo, useState } from "react"
-import Login from "./pages/Login"
 import Register from "./pages/Register"
-import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom'
@@ -14,6 +12,8 @@ import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
 import ItemDetails from './pages/ItemDetails.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
+
+import NotificationsPage from "./pages/NotificationsPage.jsx";
 
 import AdminHomePage from './pages/AdminHomePage';
 
@@ -92,6 +92,15 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminHomePage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationsPage/>
                 </ProtectedRoute>
               }
             />

@@ -5,7 +5,7 @@ from .views import (
     NoteListCreate,
     NoteDelete,
     CreateUserView, create_item,
-    user_profile_get, CategoryListView
+    user_profile_get, CategoryListView, NotificationListView
 )
 
 urlpatterns = [
@@ -19,6 +19,9 @@ urlpatterns = [
     # User Profile
     # <int:pk> will be the user's id
     path("users/<int:pk>/", user_profile_get, name="user-profile"),
+
+    # Notifications
+    path("notifications/", NotificationListView.as_view(), name="notifications"),
 
     # Notes
     path("notes/", NoteListCreate.as_view(), name="note-list"),
