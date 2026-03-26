@@ -86,18 +86,14 @@ export default function MainPage() {
             <div className="main-header">
               <div className="main-header__left">PantherFind</div>
               <div className="main-header__right">
-                <span
-                  className="notifications"
-                  onClick={() => navigate('/notifications')}
-                  style={{
-                    cursor: "pointer",
-                    marginRight: "1rem",
-                    fontSize: "1.4rem",
-                    userSelect: "none"
-                  }}
-                >
+                <button className="messages"
+                        onClick={() => navigate("/messages")}>
+                  Messages
+                </button>
+                <button className="notifications"
+                        onClick={() => navigate("/notifications")}>
                   Notifications
-                </span>
+                </button>
 
                 <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp"/>
                 ({user?.username})
