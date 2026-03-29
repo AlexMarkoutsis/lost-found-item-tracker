@@ -3,6 +3,9 @@ from django.urls import path, include
 from items.views import CreateUserView, login_view, me
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path("admin/", admin.site.urls),
 
@@ -16,3 +19,5 @@ urlpatterns = [
     # All app routes
     path("api/", include("items.urls")),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

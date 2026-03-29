@@ -14,6 +14,8 @@ class UserProfile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(default='profile_images/default_pfp.svg', upload_to='profile_images/')
+    description = models.CharField(max_length=700, default="No description.")
     display_name = models.CharField(max_length=100)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='standard')
 

@@ -255,22 +255,6 @@ html, body {
   }
 }
 
-.upp_main{
-  margin: 25px;
-}
-
-.upp_pfp{
-  height: 10em;
-}
-
-.upp_pfp_cont{
-  display: flex
-}
-
-.upp_name_desc{
-  margin-left: 20px;
-}
-
 .section-title {
   font-size: 12px;
   font-weight: 600;

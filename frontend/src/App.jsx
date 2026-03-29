@@ -8,12 +8,13 @@ import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom'
 
 import './App.css'
 
+
 import LoginPage from './pages/LoginPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
 import ItemDetails from './pages/ItemDetails.jsx'
-import UserProfilePage from './pages/UserProfilePage.jsx'
+import UserProfilePage from './pages/UserProfile.jsx'
 
 import AdminHomePage from './pages/AdminHomePage';
 
