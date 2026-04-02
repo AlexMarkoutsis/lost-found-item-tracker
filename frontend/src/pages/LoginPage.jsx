@@ -11,14 +11,9 @@ export default function LoginPage() {
 
   async function handleLogin() {
     try {
-      const user = await login(username, password);   // calls /api/token/ then /api/auth/me/
-      console.log("Logged in user:", user);
-      setUser(user);                                   // store user in global context
-      if (user.profile?.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/main");
-      }                               // redirect
+      const user = await login(username, password)   // calls /api/token/ then /api/auth/me/
+      setUser(user)                                   // store user in global context
+      navigate('/main')                               // redirect
     } catch (err) {
       alert("Invalid credentials")
     }

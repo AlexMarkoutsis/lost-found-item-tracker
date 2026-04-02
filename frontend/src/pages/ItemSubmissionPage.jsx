@@ -1,7 +1,7 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ACCESS_TOKEN } from "../constants.js";
-import { AuthContext } from "../context/AuthContext.jsx";
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "../constants.js";
+import {AuthContext} from "../context/AuthContext.jsx";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10)
@@ -15,25 +15,10 @@ export default function ItemSubmissionPage() {
 
   const [itemName, setItemName] = useState('')
   const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
   const [location, setLocation] = useState('')
   const [dateFound, setDateFound] = useState(today)
   const [imageName, setImageName] = useState('')
-
-  const [category, setCategory] = useState('');
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const access_token = localStorage.getItem(ACCESS_TOKEN);
-
-    fetch("/api/categories/", {
-      headers: {
-        Authorization: `Bearer ${access_token}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => setCategories(data))
-      .catch(err => console.error("Failed to load categories:", err));
-  }, []);
 
   const canSubmit = itemName.trim() && description.trim() && category && location.trim() && dateFound
 
@@ -111,11 +96,11 @@ export default function ItemSubmissionPage() {
                   onChange={(e) => setCategory(e.target.value)}
                 >
                   <option value="">(dropdown menu)</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
+                  <option value="Accessories">Accessories</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Keys">Keys</option>
+                  <option value="Other">Other</option>
                 </select>
               </label>
 
