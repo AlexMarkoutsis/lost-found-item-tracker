@@ -15,7 +15,7 @@ import UserProfilePage from './pages/UserProfilePage.jsx'
 
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 
-import AdminHomePage from './pages/AdminHomePage.jsx';
+import AdminHomePage from './pages/AdminHomePage';
 
 import { AuthProvider } from "./context/AuthContext";
 import MessagesPage from "./pages/MessagesPage.jsx";

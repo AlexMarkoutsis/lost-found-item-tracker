@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "items",
+    "items.apps.ItemsConfig",
     "rest_framework",
     "corsheaders",  # fix by searching exactly the error on google, Stackoverflow has the solution
 ]                   # goes for any future subsequent "ModuleNotFoundError"s
