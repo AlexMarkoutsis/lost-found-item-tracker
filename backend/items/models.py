@@ -116,5 +116,28 @@ class ActivityLog(models.Model):
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+
     def __str__(self):
         return f"{self.user.username} - {self.action} - {self.timestamp}"
+
+
+class Notification(models.Model):
+    NOTIF_TYPES = [
+        ("item_posted", "Item Posted"),
+        ("item_claimed", "Item Claimed"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # who receives the notification
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="actor_notifications",
+        null=True,  # allow null
+        blank=True
+    )
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    notif_type = models.CharField(max_length=20, choices=NOTIF_TYPES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.notif_type}"

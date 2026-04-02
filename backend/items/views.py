@@ -1,18 +1,17 @@
-# from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from django.db.models import Q
 
-from .serializers import UserSerializer, UserProfileSerializer, NoteSerializer, ItemSerializer, CategorySerializer
-from .models import Note, Item, UserProfile, Category
+from .serializers import UserSerializer, UserProfileSerializer, NoteSerializer, ItemSerializer, CategorySerializer, \
+    NotificationSerializer
+from .models import Note, Item, UserProfile, Category, Notification
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -126,7 +125,24 @@ def list_items(request):
 def create_item(request):
     serializer = ItemSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(reporter=request.user)
+        item = serializer.save(reporter=request.user)
+        currentuser = request.user
+
+        if currentuser.profile.role == 'admin':
+            Notification.objects.create(
+            user=currentuser,
+            actor=item.reporter,
+            item=item,
+            notif_type="item_posted",
+            )
+        else:
+            Notification.objects.create(
+            user=currentuser,
+            actor=currentuser,
+            item=item,
+            notif_type="item_posted",
+            )
+
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
@@ -134,3 +150,19 @@ def create_item(request):
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
+class NotificationListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        profile = user.profile
+
+        if profile.role == "admin":
+            notifications = Notification.objects.all().order_by("-created_at")
+        else:
+            notifications = Notification.objects.filter(user=user).order_by("-created_at")
+
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data)

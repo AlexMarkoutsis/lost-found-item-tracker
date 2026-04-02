@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 # from django.contrib.auth.hashers import make_password
-from .models import Note, Item, UserProfile, Category
+from .models import Note, Item, UserProfile, Category, Notification
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -70,3 +70,12 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "name"]
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    item_title = serializers.CharField(source="item.title", read_only=True)
+    actor_username = serializers.CharField(source="actor.username", read_only=True)
+
+    class Meta:
+        model = Notification
+        fields = ["id", "notif_type", "item_title", "actor_username", "created_at"]

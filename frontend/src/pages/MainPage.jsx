@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
+import {AuthContext} from '../context/AuthContext'
 import default_pfp from "../assets/default_pfp.svg"
 import {ACCESS_TOKEN} from "../constants.js";
 
@@ -11,8 +11,8 @@ function formatItem(item) {
   const cat = item.category_name ? `Category: ${item.category_name}` : ''
   const where = item.location ? `Location: ${item.location}` : ''
   const when = item.date_reported
-  ? `Date found: ${item.date_reported}`
-  : ''
+    ? `Date found: ${item.date_reported}`
+    : ''
   const meta = [cat, where, when].filter(Boolean).join(' · ')
 
   return (
@@ -26,7 +26,7 @@ function formatItem(item) {
 
 export default function MainPage() {
   const navigate = useNavigate()
-  const { user, logout } = useContext(AuthContext)
+  const {user, logout} = useContext(AuthContext)
   const [items, setItems] = useState([])
 
 
@@ -67,10 +67,10 @@ export default function MainPage() {
   }, [setItems])
 
   const sorted = Array.isArray(items)
-  ? [...items].sort(
+    ? [...items].sort(
       (a, b) => new Date(b.date_reported) - new Date(a.date_reported)
     )
-  : [];
+    : [];
 
   const handlePfpClick = () => {
     navigate(`/users/${user.id}`);
@@ -86,7 +86,20 @@ export default function MainPage() {
             <div className="main-header">
               <div className="main-header__left">PantherFind</div>
               <div className="main-header__right">
-                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp" />
+                <span
+                  className="notifications"
+                  onClick={() => navigate('/notifications')}
+                  style={{
+                    cursor: "pointer",
+                    marginRight: "1rem",
+                    fontSize: "1.4rem",
+                    userSelect: "none"
+                  }}
+                >
+                  Notifications
+                </span>
+
+                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp"/>
                 ({user?.username})
               </div>
             </div>
@@ -106,20 +119,20 @@ export default function MainPage() {
                 </label>
 
                 <label className="field">
-                <span className="field__label">Category</span>
-                <select
-                  className="field__input"
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                >
-                  <option value="">(dropdown menu)</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  <span className="field__label">Category</span>
+                  <select
+                    className="field__input"
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                  >
+                    <option value="">(dropdown menu)</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
                 <label className="field">
                   <span className="field__label">Location</span>
@@ -166,8 +179,9 @@ export default function MainPage() {
                       </div>
                     ) : (
                       sorted.map((it) => (
-                        <div key={it.id} className="list-item" role="listitem" onClick={() => navigate('/item-details', { state: { item:it } })}>
-                          { formatItem(it) }
+                        <div key={it.id} className="list-item" role="listitem"
+                             onClick={() => navigate('/item-details', {state: {item: it}})}>
+                          {formatItem(it)}
                         </div>
                       ))
                     )}
