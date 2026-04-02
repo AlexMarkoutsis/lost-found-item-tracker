@@ -5,7 +5,7 @@ from .views import (
     NoteListCreate,
     NoteDelete,
     CreateUserView, create_item,
-    user_profile_get, CategoryListView, NotificationListView
+    user_profile_get, CategoryListView, NotificationListView, send_message, inbox, conversation
 )
 
 urlpatterns = [
@@ -22,6 +22,11 @@ urlpatterns = [
 
     # Notifications
     path("notifications/", NotificationListView.as_view(), name="notifications"),
+
+    # Messages
+    path("messages/", send_message),
+    path("messages/inbox/", inbox),
+    path("messages/<int:user_id>/", conversation),
 
     # Notes
     path("notes/", NoteListCreate.as_view(), name="note-list"),

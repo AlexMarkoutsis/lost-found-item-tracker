@@ -18,6 +18,7 @@ import NotificationsPage from "./pages/NotificationsPage.jsx";
 import AdminHomePage from './pages/AdminHomePage';
 
 import { AuthProvider } from "./context/AuthContext";
+import MessagesPage from "./pages/MessagesPage.jsx";
 
 
 export const AppContext = createContext(null)
@@ -101,6 +102,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <NotificationsPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <MessagesPage/>
                 </ProtectedRoute>
               }
             />

@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
 from .serializers import UserSerializer, UserProfileSerializer, NoteSerializer, ItemSerializer, CategorySerializer, \
-    NotificationSerializer
-from .models import Note, Item, UserProfile, Category, Notification
+    NotificationSerializer, MessageSerializer
+from .models import Note, Item, UserProfile, Category, Notification, Message
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
@@ -70,6 +70,8 @@ def login_view(request):
             return JsonResponse({"success": True, "user": user.username})
 
         return JsonResponse({"success": False, "error": "Invalid credentials"}, status=400)
+    return None
+
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
@@ -77,7 +79,6 @@ def user_profile_get(request, pk):
     user_profile = get_object_or_404(UserProfile, user_id=pk)
     serializedData = UserProfileSerializer(user_profile).data
     return Response(serializedData)
-    pass
 
 
 @api_view(["POST"])
@@ -85,7 +86,6 @@ def user_profile_get(request, pk):
 def user_profile_post(request):
     serializer = UserProfileSerializer(data=request.data)
     return Response(serializer.errors, status=400)
-    pass
 
 
 @api_view(['GET'])
@@ -166,3 +166,57 @@ class NotificationListView(APIView):
 
         serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def send_message(request):
+    sender = request.user
+    recipient_id = request.data.get("recipient")
+    content = request.data.get("content")
+
+    if not recipient_id or not content:
+        return Response({"error": "Recipient and content required"}, status=400)
+
+    try:
+        recipient = User.objects.get(id=recipient_id)
+    except User.DoesNotExist:
+        return Response({"error": "Recipient not found"}, status=404)
+
+    message = Message.objects.create(
+        sender=sender,
+        recipient=recipient,
+        content=content
+    )
+
+    serializer = MessageSerializer(message)
+    return Response(serializer.data, status=201)
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def inbox(request):
+    user = request.user
+
+    # Get all messages where the user is sender or recipient
+    messages = Message.objects.filter(
+        Q(sender=user) | Q(recipient=user)
+    ).order_by("-created_at")
+
+    serializer = MessageSerializer(messages, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def conversation(request, user_id):
+    user = request.user
+
+    messages = Message.objects.filter(
+        (Q(sender=user) & Q(recipient_id=user_id)) |
+        (Q(sender_id=user_id) & Q(recipient=user))
+    ).order_by("created_at")
+
+    serializer = MessageSerializer(messages, many=True)
+    return Response(serializer.data)
