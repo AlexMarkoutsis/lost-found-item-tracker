@@ -74,7 +74,7 @@ export default function ItemSubmissionPage() {
                   if (response.ok) {
                     navigate("/main", { state: { refresh: true } });
                   } else {
-                    alert("Failed to submit item: " + JSON.stringify(data));
+                    alert("Failed to submit item: " + JSON.stringify(data) + ": " + category);
                   }
                 } catch (err) {
                   console.error("Item submission error:", err);

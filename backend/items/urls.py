@@ -1,12 +1,17 @@
 from django.urls import path
+from rest_framework import routers
 from .views import (
     login_view,
     list_items,
     NoteListCreate,
     NoteDelete,
     CreateUserView, create_item,
-    user_profile_get, CategoryListView, NotificationListView, send_message, inbox, conversation
+    user_profile_get, user_profile_edit, UserProfileEdit,
+    CategoryListView, NotificationListView, send_message, inbox, conversation
 )
+
+router = routers.DefaultRouter()
+router.register('avatar', UserProfileEdit)
 
 urlpatterns = [
     # Items
@@ -19,6 +24,8 @@ urlpatterns = [
     # User Profile
     # <int:pk> will be the user's id
     path("users/<int:pk>/", user_profile_get, name="user-profile"),
+    path("users/<int:pk>/edit/", user_profile_edit, name="user-profile-edit"),
+    path("users/<int:pk>/class-edit/", UserProfileEdit.as_view({'get': 'retrieve', 'put': 'update', 'post': 'update',})),
 
     # Notifications
     path("notifications/", NotificationListView.as_view(), name="notifications"),

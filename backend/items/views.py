@@ -7,7 +7,7 @@ from django.db.models import Q
 from .serializers import UserSerializer, UserProfileSerializer, NoteSerializer, ItemSerializer, CategorySerializer, \
     NotificationSerializer, MessageSerializer
 from .models import Note, Item, UserProfile, Category, Notification, Message
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -16,6 +16,8 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import json
+from rest_framework import viewsets, permissions
+from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -83,9 +85,38 @@ def user_profile_get(request, pk):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def user_profile_post(request):
-    serializer = UserProfileSerializer(data=request.data)
-    return Response(serializer.errors, status=400)
+def user_profile_edit(request, pk):
+    if request.method == "POST":
+        new_name = request.data.get('display_name')
+        new_description = request.data.get('description')
+        new_avatar = request.FILES.get('avatar')
+
+        print(f"\033[92m FILES: \033[0m", request.FILES)
+        print(f"\033[92m NEW AVA: \033[0m", new_avatar)
+        try:
+            user_profile = UserProfile.objects.get(id=pk)
+            user_profile.display_name = new_name
+            user_profile.description = new_description
+            user_profile.avatar = new_avatar
+            user_profile.save()
+            return Response({"message": "Updated successfully"}, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print("THE ERROR:", e)
+            return Response({"ERrOR": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response({"Not a post request"}, status=400)
+
+
+class UserProfileEdit(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
 
 
 @api_view(['GET'])

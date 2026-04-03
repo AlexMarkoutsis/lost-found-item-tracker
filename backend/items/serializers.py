@@ -10,7 +10,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             "display_name",
             "avatar",
-            "bio",
+            "description",
             "role",
             # "is_verified",
             "preferred_building",

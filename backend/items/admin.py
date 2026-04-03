@@ -17,7 +17,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "display_name", "role")
+    list_display = ("user", "avatar", "description", "display_name", "role")
     list_filter = ("role",)
 
 

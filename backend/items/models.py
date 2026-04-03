@@ -18,8 +18,8 @@ class UserProfile(models.Model):
 
     # Identity
     display_name = models.CharField(max_length=100)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    bio = models.TextField(blank=True)
+    avatar = models.ImageField(default='profile_images/default_pfp.svg', upload_to='profile_images/')
+    description = models.CharField(max_length=700, default="No description.")
 
     # Permissions
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='standard')

@@ -11,7 +11,7 @@ import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
 import ItemDetails from './pages/ItemDetails.jsx'
-import UserProfilePage from './pages/UserProfilePage.jsx'
+import UserProfilePage from './pages/UserProfile.jsx'
 
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 
