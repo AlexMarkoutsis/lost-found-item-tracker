@@ -14,10 +14,10 @@ from pathlib import Path
 from datetime import timedelta
 
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 
-# load_dotenv()
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,23 +101,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',			# Change this
-        'USER': 'postgres',				# May need to be changed
-        'PASSWORD': 'qwerty123456!',	# Change this
-        'HOST': 'localhost',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
-"""
-        'USER': 'postgres',				# May need to be changed
-        'PASSWORD': 'your_password',	# Change this
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-"""
 
 
 # Password validation
