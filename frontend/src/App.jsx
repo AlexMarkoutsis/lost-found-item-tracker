@@ -1,7 +1,5 @@
 import react, { createContext, useMemo, useState } from "react"
-import Login from "./pages/Login"
 import Register from "./pages/Register"
-import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom'
@@ -13,9 +11,14 @@ import RegistrationPage from './pages/RegistrationPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ItemSubmissionPage from './pages/ItemSubmissionPage.jsx'
 import ItemDetails from './pages/ItemDetails.jsx'
-import UserProfilePage from './pages/UserProfilePage.jsx'
+import UserProfilePage from './pages/UserProfile.jsx'
+
+import NotificationsPage from "./pages/NotificationsPage.jsx";
+
+import AdminHomePage from './pages/AdminHomePage';
 
 import { AuthProvider } from "./context/AuthContext";
+import MessagesPage from "./pages/MessagesPage.jsx";
 
 
 export const AppContext = createContext(null)
@@ -81,6 +84,33 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <MainPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminHomePage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationsPage/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <MessagesPage/>
                 </ProtectedRoute>
               }
             />

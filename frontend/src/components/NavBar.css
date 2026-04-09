@@ -1,0 +1,12 @@
+.navbar-contents{
+    display: flex;
+    background-color: #22222A;
+    padding: 6px;
+}
+
+
+.pantherfind_logo{
+    margin-left: 0.5em;
+    width: 8em;
+    cursor: pointer;
+}

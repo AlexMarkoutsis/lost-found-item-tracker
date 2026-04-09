@@ -1,16 +1,17 @@
 import {useContext, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
+import {AuthContext} from '../context/AuthContext'
 import default_pfp from "../assets/default_pfp.svg"
+import {ACCESS_TOKEN} from "../constants.js";
 
 
 function formatItem(item) {
   const header = item.title || item.itemName || 'Untitled Item'
   const desc = item.description || ''
-  const cat = item.category ? `Category: ${item.category}` : ''
+  const cat = item.category_name ? `Category: ${item.category_name}` : ''
   const where = item.location ? `Location: ${item.location}` : ''
-  const when = item.date_found || item.dateFound
-    ? `Date found: ${item.date_found || item.dateFound}`
+  const when = item.date_reported
+    ? `Date found: ${item.date_reported}`
     : ''
   const meta = [cat, where, when].filter(Boolean).join(' · ')
 
@@ -25,7 +26,7 @@ function formatItem(item) {
 
 export default function MainPage() {
   const navigate = useNavigate()
-  const { user, logout } = useContext(AuthContext)
+  const {user, logout} = useContext(AuthContext)
   const [items, setItems] = useState([])
 
 
@@ -34,6 +35,9 @@ export default function MainPage() {
   const [filterCategory, setFilterCategory] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
 
+  // Categories
+  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
 
   // Fetch real items from Django
   useEffect(() => {
@@ -49,10 +53,23 @@ export default function MainPage() {
     }
 
     loadItems()
+
+    const access_token = localStorage.getItem(ACCESS_TOKEN);
+
+    fetch("/api/categories/", {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error("Failed to load categories:", err));
   }, [setItems])
 
   const sorted = Array.isArray(items)
-    ? [...items].sort((a, b) => new Date(b.date_found) - new Date(a.date_found))
+    ? [...items].sort(
+      (a, b) => new Date(b.date_reported) - new Date(a.date_reported)
+    )
     : [];
 
   const handlePfpClick = () => {
@@ -69,7 +86,16 @@ export default function MainPage() {
             <div className="main-header">
               <div className="main-header__left">PantherFind</div>
               <div className="main-header__right">
-                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp" />
+                <button className="messages"
+                        onClick={() => navigate("/messages")}>
+                  Messages
+                </button>
+                <button className="notifications"
+                        onClick={() => navigate("/notifications")}>
+                  Notifications
+                </button>
+
+                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp"/>
                 ({user?.username})
               </div>
             </div>
@@ -95,12 +121,12 @@ export default function MainPage() {
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
                   >
-                    <option value="">All</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Keys">Keys</option>
-                    <option value="Other">Other</option>
+                    <option value="">(dropdown menu)</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
                   </select>
                 </label>
 
@@ -142,17 +168,20 @@ export default function MainPage() {
                 <div className="section-title">Found Items</div>
 
                 <div className="list-box" role="list">
-                  {sorted.length === 0 ? (
-                    <div className="list-item list-item--empty">
-                      No found items yet.
-                    </div>
-                  ) : (
-                    sorted.map((it) => (
-                      <div key={it.id} className="list-item" role="listitem" onClick={() => navigate('/item-details', { state: { item:it } })}>
-                        { formatItem(it) }
+                  <div className="list-box__scroll">
+                    {sorted.length === 0 ? (
+                      <div className="list-item list-item--empty">
+                        No found items yet.
                       </div>
-                    ))
-                  )}
+                    ) : (
+                      sorted.map((it) => (
+                        <div key={it.id} className="list-item" role="listitem"
+                             onClick={() => navigate('/item-details', {state: {item: it}})}>
+                          {formatItem(it)}
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
 

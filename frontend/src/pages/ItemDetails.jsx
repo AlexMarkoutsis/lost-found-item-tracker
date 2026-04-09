@@ -39,7 +39,7 @@ export default function ItemDetails() {
             <div className="main-body">
               <label>Item Name: {item.title}</label><br />
               <label>Description: {item.description}</label><br />
-              <label>Category: {item.category}</label><br />
+              <label>Category: {item.category_name}</label><br />
               <label>Location Found: {item.location}</label><br />
               <label>Date Found: {item.date_reported}</label><br />
               <label>Reported By: {item.reporter_username}</label><br />

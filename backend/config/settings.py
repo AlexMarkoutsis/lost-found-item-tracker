@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "items",
+    "items.apps.ItemsConfig",
     "rest_framework",
     "corsheaders",  # fix by searching exactly the error on google, Stackoverflow has the solution
 ]                   # goes for any future subsequent "ModuleNotFoundError"s
@@ -165,3 +165,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'
