@@ -39,6 +39,39 @@ export default function MainPage() {
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
 
+  // async function to claim items
+  async function handleClaim(itemId) {
+    const access_token = localStorage.getItem(ACCESS_TOKEN);
+
+    try {
+      const response = await fetch(`/api/items/${itemId}/claim/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Failed to claim item");
+        return;
+      }
+
+      alert("Item claimed successfully!");
+
+      // Refresh items list
+      const refreshed = await fetch("/api/items/?status=found");
+      const newData = await refreshed.json();
+      setItems(newData);
+
+    } catch (err) {
+      console.error("Claim failed:", err);
+      alert("Something went wrong.");
+    }
+  }
+
   // Fetch real items from Django
   useEffect(() => {
     async function loadItems() {
@@ -175,9 +208,22 @@ export default function MainPage() {
                       </div>
                     ) : (
                       sorted.map((it) => (
-                        <div key={it.id} className="list-item" role="listitem"
-                             onClick={() => navigate('/item-details', {state: {item: it}})}>
-                          {formatItem(it)}
+                        <div key={it.id} className="list-item" role="listitem">
+                          <div onClick={() => navigate('/item-details', {state: {item: it}})}>
+                            {formatItem(it)}
+                          </div>
+
+                          {it.status !== "claimed" && (<button
+                            className="btn btn--small"
+                            onClick={(e) => {
+                              e.stopPropagation();   // prevents opening item details
+                              console.log("Claim clicked for item:", it.id);
+                              handleClaim(it.id)
+                            }}
+                            style={{marginTop: "0.5rem"}}
+                          >
+                            Claim Item
+                          </button>)}
                         </div>
                       ))
                     )}
