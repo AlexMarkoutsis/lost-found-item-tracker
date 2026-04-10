@@ -141,14 +141,11 @@ class AuthApiTests(TestCase):
             "password": "Correct",
         }
 
-        res = self.client.post(self.LOGIN_URL, payload, format="json")
+        res = self.client.post("/api/token/", payload, format="json")
         self.assertEqual(res.status_code, 200, getattr(res, "data", res.content))
 
-        possible_keys = {"token", "access", "refresh", "key"}
-        self.assertTrue(
-            hasattr(res, "data") and isinstance(res.data, dict) and any(k in res.data for k in possible_keys),
-            f"Expected a token-like field in response, got: {getattr(res, 'data', res.content)}"
-        )
+        self.assertIn("access", res.data)
+        self.assertIn("refresh", res.data)
 
     def test_login_fails_with_wrong_password(self):
         User.objects.create_user(username="user@email.com", password="Correct")
