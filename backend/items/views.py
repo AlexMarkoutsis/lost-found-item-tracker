@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -161,17 +162,17 @@ def create_item(request):
 
         if currentuser.profile.role == 'admin':
             Notification.objects.create(
-            user=currentuser,
-            actor=item.reporter,
-            item=item,
-            notif_type="item_posted",
+                user=currentuser,
+                actor=item.reporter,
+                item=item,
+                notif_type="item_posted",
             )
         else:
             Notification.objects.create(
-            user=currentuser,
-            actor=currentuser,
-            item=item,
-            notif_type="item_posted",
+                user=currentuser,
+                actor=currentuser,
+                item=item,
+                notif_type="item_posted",
             )
 
         return Response(serializer.data, status=201)
@@ -224,7 +225,6 @@ def send_message(request):
     return Response(serializer.data, status=201)
 
 
-
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def inbox(request):
@@ -250,4 +250,55 @@ def conversation(request, user_id):
     ).order_by("created_at")
 
     serializer = MessageSerializer(messages, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def claim_item(request, item_id):
+    try:
+        item = Item.objects.get(id=item_id)
+    except Item.DoesNotExist:
+        return Response({"error": "Item not found"}, status=404)
+
+    if item.reporter == request.user:
+        return Response({"error": "You cannot claim your own item"}, status=400)
+
+    if item.status == "claimed":
+        return Response({"error": "Item already claimed"}, status=400)
+
+    # Update item
+    item.status = "claimed"
+    item.claimed_at = timezone.now()
+    item.claimed_by = request.user
+    item.save()
+
+    # Send a first system message
+    Message.objects.create(
+        sender=request.user,
+        recipient=item.reporter,
+        content="Hi! I believe " + item.title + " belongs to me."
+    )
+
+    Notification.objects.create(
+        user=item.reporter,
+        actor=request.user,
+        item=item,
+        notif_type="item_claimed",
+    )
+
+    return Response({"message": "Item claimed successfully"}, status=200)
+
+
+@api_view(['GET'])
+def user_posted_items(request, pk):
+    items = Item.objects.filter(reporter_id=pk).order_by('-date_reported')
+    serializer = ItemSerializer(items, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def user_claimed_items(request, pk):
+    items = Item.objects.filter(claimed_by_id=pk).order_by('-claimed_at')
+    serializer = ItemSerializer(items, many=True)
     return Response(serializer.data)

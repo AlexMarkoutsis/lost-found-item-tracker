@@ -7,7 +7,8 @@ from .views import (
     NoteDelete,
     CreateUserView, create_item,
     user_profile_get, user_profile_edit, UserProfileEdit,
-    CategoryListView, NotificationListView, send_message, inbox, conversation
+    CategoryListView, NotificationListView, send_message, inbox, conversation, claim_item, user_posted_items,
+    user_claimed_items
 )
 
 router = routers.DefaultRouter()
@@ -17,6 +18,7 @@ urlpatterns = [
     # Items
     path("items/", list_items, name="items"),
     path('items/create/', create_item, name="create-item"),
+    path('items/<int:item_id>/claim/', claim_item),
 
     # Categories
     path("categories/", CategoryListView.as_view()),
@@ -25,7 +27,11 @@ urlpatterns = [
     # <int:pk> will be the user's id
     path("users/<int:pk>/", user_profile_get, name="user-profile"),
     path("users/<int:pk>/edit/", user_profile_edit, name="user-profile-edit"),
-    path("users/<int:pk>/class-edit/", UserProfileEdit.as_view({'get': 'retrieve', 'put': 'update', 'post': 'update',})),
+    path("users/<int:pk>/class-edit/", UserProfileEdit.as_view({'get': 'retrieve', 'put': 'update', 'post': 'update', })),
+
+    # User items
+    path("users/<int:pk>/posted-items/", user_posted_items, name="user-posted-items"),
+    path("users/<int:pk>/claimed-items/", user_claimed_items, name="user-claimed-items"),
 
     # Notifications
     path("notifications/", NotificationListView.as_view(), name="notifications"),

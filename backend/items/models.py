@@ -96,6 +96,14 @@ class Item(models.Model):
     # DR-07: Archived items remain accessible
     is_archived = models.BooleanField(default=False)
 
+    # Who claimed the item
+    claimed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='claimed_items'
+    )
+
     def __str__(self):
         return f"{self.title} ({self.status})"
 
