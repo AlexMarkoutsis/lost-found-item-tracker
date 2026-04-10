@@ -38,25 +38,27 @@ export default function NotificationsPage() {
   const isAdmin = user?.profile.role === "admin";
 
   return (
-    <div className="page">
-      <div className="page__title">Notifications</div>
+    <div className="screen">
+      <div className="page">
+        <div className="page__title">Notifications</div>
 
-      <div className="frame frame--wide">
-        <div className="frame__inner">
-          {notifications.length === 0 ? (
-            <p>No notifications yet.</p>
-          ) : (
-            notifications.map(n => (
-              <div key={n.id} className="notif-item">
-                <div className="notif-message">
-                  {formatMessage(n, isAdmin)}
+        <div className="frame frame--wide">
+          <div className="frame__inner">
+            {notifications.length === 0 ? (
+              <p>No notifications yet.</p>
+            ) : (
+              notifications.map(n => (
+                <div key={n.id} className="notif-item">
+                  <div className="notif-message">
+                    {formatMessage(n, isAdmin)}
+                  </div>
+                  <div className="notif-date">
+                    {new Date(n.created_at).toLocaleString()}
+                  </div>
                 </div>
-                <div className="notif-date">
-                  {new Date(n.created_at).toLocaleString()}
-                </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

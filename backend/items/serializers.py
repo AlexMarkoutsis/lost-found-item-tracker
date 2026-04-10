@@ -26,10 +26,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer(read_only=True)
+    password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ["id", "username", "password", "profile"]
+        fields = ["id", "username", "password", "password2", "profile"]
         extra_kwargs = {
             "password": {"write_only": True}
         }
@@ -39,7 +40,20 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Username is already taken.")
         return value
 
+    def validate(self, attrs):
+        password = attrs.get("password")
+        password2 = attrs.get("password2")
+
+        if password2 is None:
+            raise serializers.ValidationError({"password2": "This field is required."})
+
+        if password != password2:
+            raise serializers.ValidationError({"password2": "Passwords do not match."})
+
+        return attrs
+
     def create(self, validated_data):
+        validated_data.pop("password2")
         password = validated_data.pop("password")
         user = User(**validated_data)
         user.is_active = True
