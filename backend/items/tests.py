@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 from django.contrib.auth.models import User
 from datetime import date
 
-from items.models import Item
+from items.models import Item, Category
 
 """
 Make sure the projects URL ENDPOINTS match those from the test cases in order for tests to pass correctly.
@@ -141,14 +141,11 @@ class AuthApiTests(TestCase):
             "password": "Correct",
         }
 
-        res = self.client.post(self.LOGIN_URL, payload, format="json")
+        res = self.client.post("/api/token/", payload, format="json")
         self.assertEqual(res.status_code, 200, getattr(res, "data", res.content))
 
-        possible_keys = {"token", "access", "refresh", "key"}
-        self.assertTrue(
-            hasattr(res, "data") and isinstance(res.data, dict) and any(k in res.data for k in possible_keys),
-            f"Expected a token-like field in response, got: {getattr(res, 'data', res.content)}"
-        )
+        self.assertIn("access", res.data)
+        self.assertIn("refresh", res.data)
 
     def test_login_fails_with_wrong_password(self):
         User.objects.create_user(username="user@email.com", password="Correct")
@@ -211,11 +208,13 @@ class AuthApiTests(TestCase):
             password="Password123"
         )
 
+        accessories = Category.objects.create(name="Accessories")
+
         Item.objects.create(
             title="Wallet",
             description="Black wallet",
             status="lost",
-            category="Accessories",
+            category=accessories,
             location="Library",
             date_reported=date.today(),
             reporter=reporter,
@@ -225,7 +224,7 @@ class AuthApiTests(TestCase):
             title="Keys",
             description="Car keys",
             status="found",
-            category="Accessories",
+            category=accessories,
             location="Student Center",
             date_reported=date.today(),
             reporter=reporter,
@@ -237,17 +236,20 @@ class AuthApiTests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]["title"], "Wallet")
 
-    def test_list_items_filters_by_category_case_insensitive(self):
+    def test_list_items_filters_by_id(self):
         reporter = User.objects.create_user(
             username="user@email.com",
             password="Password123"
         )
 
+        electronics = Category.objects.create(name="Electronics")
+        clothing = Category.objects.create(name="Clothing")
+
         Item.objects.create(
             title="Phone",
             description="iPhone",
             status="lost",
-            category="Electronics",
+            category=electronics,
             location="Library",
             date_reported=date.today(),
             reporter=reporter,
@@ -257,13 +259,13 @@ class AuthApiTests(TestCase):
             title="Jacket",
             description="Blue jacket",
             status="lost",
-            category="Clothing",
+            category=clothing,
             location="Student Center",
             date_reported=date.today(),
             reporter=reporter,
         )
 
-        res = self.client.get(f"{self.ITEMS_URL}?category=electronics")
+        res = self.client.get(f"{self.ITEMS_URL}?category={electronics.id}")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 1)
@@ -275,11 +277,13 @@ class AuthApiTests(TestCase):
             password="Password123"
         )
 
+        accessories = Category.objects.create(name="Accessories")
+
         Item.objects.create(
             title="Notebook",
             description="Math notes",
             status="lost",
-            category="School Supplies",
+            category=accessories,
             location="Main Library",
             date_reported=date.today(),
             reporter=reporter,
@@ -289,7 +293,7 @@ class AuthApiTests(TestCase):
             title="Bottle",
             description="Steel bottle",
             status="lost",
-            category="Accessories",
+            category=accessories,
             location="Student Center",
             date_reported=date.today(),
             reporter=reporter,
@@ -307,11 +311,13 @@ class AuthApiTests(TestCase):
             password="Password123"
         )
 
+        electronics = Category.objects.create(name="Electronics")
+
         Item.objects.create(
             title="Phone",
             description="iPhone",
             status="lost",
-            category="Electronics",
+            category=electronics,
             location="Library",
             date_reported=date.today(),
             reporter=reporter,
@@ -321,13 +327,13 @@ class AuthApiTests(TestCase):
             title="Phone",
             description="Android",
             status="found",
-            category="Electronics",
+            category=electronics,
             location="Library",
             date_reported=date.today(),
             reporter=reporter,
         )
 
-        res = self.client.get(f"{self.ITEMS_URL}?status=lost&category=electronics&location=library")
+        res = self.client.get(f"{self.ITEMS_URL}?status=lost&category={electronics.id}&location=library")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 1)
@@ -340,11 +346,13 @@ class AuthApiTests(TestCase):
         )
         self.client.force_authenticate(user=reporter)
 
+        category = Category.objects.create(name="Accessories")
+
         payload = {
             "title": "Wallet",
             "description": "Black leather wallet",
             "status": "lost",
-            "category": "Accessories",
+            "category": category.id,
             "location": "Library",
             "date_reported": str(date.today()),
         }

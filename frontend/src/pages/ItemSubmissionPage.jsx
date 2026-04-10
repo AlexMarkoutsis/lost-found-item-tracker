@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ACCESS_TOKEN } from "../constants.js";
 import { AuthContext } from "../context/AuthContext.jsx";
+import "./ItemSubmissionPage.css";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10)
@@ -21,6 +22,10 @@ export default function ItemSubmissionPage() {
 
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
+
+  const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     const access_token = localStorage.getItem(ACCESS_TOKEN);
@@ -50,6 +55,10 @@ export default function ItemSubmissionPage() {
                 e.preventDefault();
                 if (!canSubmit) return;
 
+                setSuccessMessage('');
+                setErrorMessage('');
+                setIsSubmitting(true);
+
                 try {
                   const access_token = localStorage.getItem(ACCESS_TOKEN)
                   const response = await fetch("/api/items/create/", {
@@ -69,19 +78,44 @@ export default function ItemSubmissionPage() {
                     }),
                   });
 
-                  const data = await response.json();
+                  let data = {};
+                  const contentType = response.headers.get("content-type");
+
+                  if(contentType && contentType.includes("application/json")){
+                    data = await response.json();
+                  }
 
                   if (response.ok) {
-                    navigate("/main", { state: { refresh: true } });
+                    setSuccessMessage("Item submitted Successfully.");
+
+                    setTimeout(() => {
+                      navigate("/main", { state: { refresh: true } });
+                    }, 1200);
                   } else {
-                    alert("Failed to submit item: " + JSON.stringify(data) + ": " + category);
+                    setErrorMessage(
+                        data?.message ||
+                        Object.values(data || {}).flat().join(" ") ||
+                        "Failed to submit item."
+                    );
                   }
                 } catch (err) {
                   console.error("Item submission error:", err);
-                  alert("Something went wrong submitting the item.");
+                  setErrorMessage("Something went wrong submitting the item.");
+                } finally {
+                  setIsSubmitting(false);
                 }
               }}
             >
+              {successMessage && (
+                <div className="message message--success">
+                  {successMessage}
+                </div>
+              )}
+              {errorMessage && (
+                <div className="message message--error">
+                  {errorMessage}
+                </div>
+              )}
               <label className="field">
                 <span className="field__label">Item Name</span>
                 <input
@@ -153,8 +187,8 @@ export default function ItemSubmissionPage() {
               </label>
 
               <div className="button-col">
-                <button className="btn" type="submit" disabled={!canSubmit}>
-                  Submit
+                <button className="btn" type="submit" disabled={!canSubmit || isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit"}
                 </button>
 
                 <button className="btn btn--secondary" type="button" onClick={() => navigate('/main')}>
