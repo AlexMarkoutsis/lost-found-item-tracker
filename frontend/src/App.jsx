@@ -19,6 +19,7 @@ import AdminHomePage from './pages/AdminHomePage';
 
 import { AuthProvider } from "./context/AuthContext";
 import MessagesPage from "./pages/MessagesPage.jsx";
+import EditItem from "./pages/EditItem.jsx";
 
 
 export const AppContext = createContext(null)
@@ -139,6 +140,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ItemDetails/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/edit-item"
+              element={
+                <ProtectedRoute>
+                  <EditItem/>
                 </ProtectedRoute>
               }
             />

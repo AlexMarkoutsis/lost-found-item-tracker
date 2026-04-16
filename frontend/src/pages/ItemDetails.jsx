@@ -1,12 +1,20 @@
-import { useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import {useContext} from "react";
+import {useNavigate, useLocation} from "react-router-dom";
+import {AuthContext} from "../context/AuthContext";
 
 export default function ItemDetails() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const location = useLocation();
-  const item = location.state?.item;
+  const {user} = useContext(AuthContext);
+  const {state} = useLocation();
+  const {item, from} = state;
+
+  const handleBack = () => {
+    if (from === "profile") {
+      navigate(`/users/${user.id}`);
+    } else {
+      navigate("/main");
+    }
+  };
 
   if (!item) {
     return (
@@ -14,7 +22,7 @@ export default function ItemDetails() {
         <div className="page">
           <div className="page__title">Item Details</div>
           <p>No item data was provided.</p>
-          <button className="btn" onClick={() => navigate("/main")}>
+          <button className="btn" onClick={handleBack}>
             Back
           </button>
         </div>
@@ -37,12 +45,12 @@ export default function ItemDetails() {
             </div>
 
             <div className="main-body">
-              <label>Item Name: {item.title}</label><br />
-              <label>Description: {item.description}</label><br />
-              <label>Category: {item.category_name}</label><br />
-              <label>Location Found: {item.location}</label><br />
-              <label>Date Found: {item.date_reported}</label><br />
-              <label>Reported By: {item.reporter_username}</label><br />
+              <label>Item Name: {item.title}</label><br/>
+              <label>Description: {item.description}</label><br/>
+              <label>Category: {item.category_name}</label><br/>
+              <label>Location Found: {item.location}</label><br/>
+              <label>Date Found: {item.date_reported}</label><br/>
+              <label>Reported By: {item.reporter_username}</label><br/>
               <label>Status: {item.status}</label>
             </div>
 
@@ -50,10 +58,19 @@ export default function ItemDetails() {
               <button
                 className="btn btn--secondary"
                 type="button"
-                onClick={() => navigate("/main")}
+                onClick={handleBack}
               >
                 Back
               </button>
+              {item.reporter === user.id && (
+                <button
+                  className="btn btn--primary"
+                  type="button"
+                  onClick={() => navigate("/edit-item", {state: {item, from}})}
+                >
+                  Edit Item
+                </button>
+              )}
             </div>
           </div>
         </div>

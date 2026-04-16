@@ -8,7 +8,7 @@ from .views import (
     CreateUserView, create_item,
     user_profile_get, user_profile_edit, UserProfileEdit,
     CategoryListView, NotificationListView, send_message, inbox, conversation, claim_item, user_posted_items,
-    user_claimed_items
+    user_claimed_items, edit_item
 )
 
 router = routers.DefaultRouter()
@@ -19,6 +19,7 @@ urlpatterns = [
     path("items/", list_items, name="items"),
     path('items/create/', create_item, name="create-item"),
     path('items/<int:item_id>/claim/', claim_item),
+    path("items/<int:pk>/edit/", edit_item, name="edit-item"),
 
     # Categories
     path("categories/", CategoryListView.as_view()),
