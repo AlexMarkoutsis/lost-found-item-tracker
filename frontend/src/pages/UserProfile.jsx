@@ -1,20 +1,20 @@
-import { useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { ACCESS_TOKEN } from '../constants.js';
+import {useParams} from "react-router-dom";
+import {useContext, useEffect, useState} from "react";
+import {useNavigate} from 'react-router-dom';
+import {AuthContext} from '../context/AuthContext';
+import {ACCESS_TOKEN} from '../constants.js';
 import msgIcon from "../assets/messageIcon.png";
 import editIcon from "../assets/pencilEdit.svg";
 import NavBar from "../components/NavBar.jsx";
-import { API_URL } from "../constants";
+import {API_URL} from "../constants";
 import ProfileEditForm from "../components/ProfileEditForm";
 
 import './UserProfile.css';
 
 function UserProfilePage() {
-  const { user } = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const {id} = useParams();
 
   const [profile, setProfile] = useState(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
@@ -82,6 +82,10 @@ function UserProfilePage() {
     setIsEditFormOpen(true);
   };
 
+  const handleItemClick = (item) => {
+    navigate('/item-details', {state: {item, from: 'profile'}});
+  };
+
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     setIsEditFormOpen(false);
@@ -112,13 +116,13 @@ function UserProfilePage() {
     <div className="upp-root">
       <NavBar className="upp-navbar" />
       <div className="upp-page">
-        <ProfileEditForm editing={isEditFormOpen} onClose={() => setIsEditFormOpen(false)} />
+        <ProfileEditForm editing={isEditFormOpen} onClose={() => setIsEditFormOpen(false)}/>
 
         <div className="content">
           <div className="profile">
             <div className="profile-top">
               <div className="pfp-cont">
-                <img className="pfp" src={`${API_URL}${profile.avatar}`} alt="avatar" />
+                <img className="pfp" src={`${API_URL}${profile.avatar}`} alt="avatar"/>
               </div>
             </div>
 
@@ -126,11 +130,12 @@ function UserProfilePage() {
               <div className="display-name-cont">
                 <span className="display-name">{displayName}</span>
               </div>
+            </div>
 
               <div className="profile-actions">
                 <div className="upp-msg-cont">
                   <button className="upp-msg-btn">
-                    <img className="upp-msg-icon" src={msgIcon} alt="avatar" />
+                    <img className="upp-msg-icon" src={msgIcon} alt="avatar"/>
                     <span className="upp-send-msg">Send message</span>
                   </button>
                 </div>
@@ -154,7 +159,7 @@ function UserProfilePage() {
 
             <div className="edit-profile-cont">
               <button className="edit-profile-btn" onClick={handleEditProfile}>
-                <img className="edit-profile-icon" src={editIcon} alt="editIcon" />
+                <img className="edit-profile-icon" src={editIcon} alt="editIcon"/>
                 <div className="edit-profile-txt">Edit profile</div>
               </button>
             </div>
@@ -166,7 +171,7 @@ function UserProfilePage() {
                 className={activeTab === 0 ? "upp-posted-items-tab active-tab" : "upp-posted-items-tab"}
                 onClick={() => toggleTab(0)}
               >
-                <div className="upp-posted-items-tab-detail" style={{ opacity: activeTab === 0 ? '1' : '0' }} />
+                <div className="upp-posted-items-tab-detail" style={{opacity: activeTab === 0 ? '1' : '0'}}/>
                 <span className="upp-posted-items">Posted items</span>
               </div>
 
@@ -174,14 +179,14 @@ function UserProfilePage() {
                 className={activeTab === 1 ? "upp-claimed-items-tab active-tab" : "upp-claimed-items-tab"}
                 onClick={() => toggleTab(1)}
               >
-                <div className="upp-claimed-items-tab-detail" style={{ opacity: activeTab === 1 ? '1' : '0' }} />
+                <div className="upp-claimed-items-tab-detail" style={{opacity: activeTab === 1 ? '1' : '0'}}/>
                 <span className="upp-claimed-items">Claimed items</span>
               </div>
             </div>
 
             <div className="upp-activities-panels">
               {/* Posted Items */}
-              <div className="upp-posted-items-panel" style={{ display: activeTab === 0 ? 'block' : 'none' }}>
+              <div className="upp-posted-items-panel" style={{display: activeTab === 0 ? 'block' : 'none'}}>
                 {postedItems.length === 0 ? (
                   <div className="upp-no-posted-items-cont">
                     <span className="upp-no-posted-items">Currently there are no published items.</span>
@@ -194,6 +199,13 @@ function UserProfilePage() {
                         <div className="upp-item-meta">
                           {item.category_name} · {item.location} · {item.date_reported}
                         </div>
+
+                        <button
+                          className="upp-view-btn"
+                          onClick={() => handleItemClick(item)}
+                        >
+                          View Item
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -201,7 +213,7 @@ function UserProfilePage() {
               </div>
 
               {/* Claimed Items */}
-              <div className="upp-claimed-items-panel" style={{ display: activeTab === 1 ? 'block' : 'none' }}>
+              <div className="upp-claimed-items-panel" style={{display: activeTab === 1 ? 'block' : 'none'}}>
                 {claimedItems.length === 0 ? (
                   <div className="upp-no-claimed-items-cont">
                     <span className="upp-no-claimed-items">No items were claimed.</span>
@@ -212,8 +224,15 @@ function UserProfilePage() {
                       <div key={item.id} className="upp-item-card">
                         <div className="upp-item-title">{item.title}</div>
                         <div className="upp-item-meta">
-                          {item.category_name} · {item.location} · Claimed on {item.claimed_at?.slice(0, 10)}
+                          {item.category_name} · {item.location} · {item.date_reported}
                         </div>
+
+                        <button
+                          className="upp-view-btn"
+                          onClick={() => handleItemClick(item)}
+                        >
+                          View Item
+                        </button>
                       </div>
                     ))}
                   </div>

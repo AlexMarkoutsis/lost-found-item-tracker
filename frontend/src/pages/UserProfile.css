@@ -319,3 +319,25 @@ width:100%;
 .upp-no-claimed-items{
 font-size:20px;
 }
+
+.upp-item-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+.upp-view-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #0057ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.upp-view-btn:hover {
+  background: #0044cc;
+}

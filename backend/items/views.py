@@ -302,3 +302,21 @@ def user_claimed_items(request, pk):
     items = Item.objects.filter(claimed_by_id=pk).order_by('-claimed_at')
     serializer = ItemSerializer(items, many=True)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def edit_item(request, pk):
+    try:
+        item = Item.objects.get(pk=pk)
+    except Item.DoesNotExist:
+        return Response({"error": "Item not found"}, status=404)
+
+    if item.reporter != request.user:
+        return Response({"error": "Not authorized"}, status=403)
+
+    serializer = ItemSerializer(item, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=400)

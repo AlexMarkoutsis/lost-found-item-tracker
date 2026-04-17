@@ -210,7 +210,7 @@ export default function MainPage() {
                     ) : (
                       sorted.map((it) => (
                         <div key={it.id} className="list-item" role="listitem">
-                          <div onClick={() => navigate('/item-details', {state: {item: it}})}>
+                          <div onClick={() => navigate('/item-details', {state: {item: it, from: 'main'}})}>
                             {formatItem(it)}
                           </div>
 
