@@ -5,7 +5,6 @@ import {AuthContext} from '../context/AuthContext';
 import {ACCESS_TOKEN} from '../constants.js';
 import msgIcon from "../assets/messageIcon.png";
 import editIcon from "../assets/pencilEdit.svg";
-import NavBar from "../components/NavBar.jsx";
 import {API_URL} from "../constants";
 import ProfileEditForm from "../components/ProfileEditForm";
 
@@ -114,7 +113,6 @@ function UserProfilePage() {
 
   return (
     <div className="upp-root">
-      <NavBar className="upp-navbar" />
       <div className="upp-page">
         <ProfileEditForm editing={isEditFormOpen} onClose={() => setIsEditFormOpen(false)}/>
 
