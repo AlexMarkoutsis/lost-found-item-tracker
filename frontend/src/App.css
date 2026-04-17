@@ -11,7 +11,13 @@ html, body {
   min-height: 100vh;
 }
 
-/* A simple wireframe-ish look to match the provided prototype */
+.app-shell {
+  min-height: 100vh;
+}
+
+.screen--with-navbar {
+  padding-top: 68px;
+}
 
 .screen {
   min-height: 100vh;
@@ -37,15 +43,11 @@ html, body {
   position: absolute;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
 
-  /* Top and bottom colored part of background (Grey Yellow (transparent[background image]) Yellow) */
+  /* Bottom colored part of background ((transparent[background image]) Yellow) */
   background: linear-gradient(
     to bottom,
-    #333333 0px,
-    #333333 60px,
-
-    #f4b400 60px,
-    #f4b400 68px,
 
     transparent 68px,
     transparent 74%,

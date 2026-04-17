@@ -1,9 +1,26 @@
-.navbar-contents{
-    display: flex;
-    background-color: #22222A;
-    padding: 6px;
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
+
+.navbar-contents{
+    display: flex;
+    background-color: #333333;
+    padding: 6px;
+    height: 50px;
+}
+
+.navbar::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 8px;
+    background: #f4b400;
+}
 
 .pantherfind_logo{
     margin-left: 0.5em;
