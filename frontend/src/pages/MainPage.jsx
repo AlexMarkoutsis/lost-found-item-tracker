@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {AuthContext} from '../context/AuthContext'
 import default_pfp from "../assets/default_pfp.svg"
 import {ACCESS_TOKEN} from "../constants.js";
+import NavBar from "../components/NavBar.jsx";
 
 
 function formatItem(item) {

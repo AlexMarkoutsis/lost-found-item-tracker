@@ -21,6 +21,8 @@ import { AuthProvider } from "./context/AuthContext";
 import MessagesPage from "./pages/MessagesPage.jsx";
 import EditItem from "./pages/EditItem.jsx";
 
+import Layout from "./components/Layout.jsx";
+
 
 export const AppContext = createContext(null)
 
@@ -72,15 +74,18 @@ export default function App() {
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/register" element={<RegistrationPage/>}/>
 
-            {/* Protected routes */}
-            <Route
-              path="/"
-              element={
-                <Navigate to="/login" replace />
-              }
-            />
+            {/* Protected routes*/}
+            <Route path="/" element={<Navigate to="/login" replace />}/>
 
+            {/*Protected routes with shared navigation bar*/}
             <Route
+                element={
+                <ProtectedRoute>
+                    <Layout />
+                </ProtectedRoute>
+                }
+            >
+                <Route
               path="/main"
               element={
                 <ProtectedRoute>
@@ -161,6 +166,8 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            </Route>
+
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound/>}/>

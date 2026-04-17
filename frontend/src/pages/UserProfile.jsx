@@ -114,7 +114,7 @@ function UserProfilePage() {
 
   return (
     <div className="upp-root">
-      <NavBar className="upp-navbar"/>
+      <NavBar className="upp-navbar" />
       <div className="upp-page">
         <ProfileEditForm editing={isEditFormOpen} onClose={() => setIsEditFormOpen(false)}/>
 
@@ -130,6 +130,7 @@ function UserProfilePage() {
               <div className="display-name-cont">
                 <span className="display-name">{displayName}</span>
               </div>
+            </div>
 
               <div className="profile-actions">
                 <div className="upp-msg-cont">
