@@ -42,6 +42,8 @@ export default function ItemSubmissionPage() {
 
   const canSubmit = itemName.trim() && description.trim() && category && location.trim() && dateFound
 
+let imageInput = document.querySelector('#imageInput');
+
   return (
     <div className="screen">
       <div className="page">
@@ -60,22 +62,29 @@ export default function ItemSubmissionPage() {
                 setIsSubmitting(true);
 
                 try {
-                  const access_token = localStorage.getItem(ACCESS_TOKEN)
-                  const response = await fetch("/api/items/create/", {
+                    let newImg = imageInput.files[0]
+                    let formData = new FormData();
+                    if(newImg != null){
+                        console.log("newImg not null");
+                    }
+                    else{
+                        console.log("NULL");
+                    }
+                    formData.append("title", itemName.trim());
+                    formData.append("description", description.trim());
+                    formData.append("category", category);
+                    formData.append("location", location.trim());
+                    formData.append("date_reported", dateFound);
+                    formData.append("status", "found");
+                    formData.append("image", newImg);
+                    const access_token = localStorage.getItem(ACCESS_TOKEN)
+                    const response = await fetch("/api/items/create/", {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json",
+//                       "Content-Type": "application/json",
                       Authorization: `Bearer ${access_token}`
                     },
-                    body: JSON.stringify({
-                      title: itemName.trim(),
-                      description: description.trim(),
-                      category,
-                      location: location.trim(),
-                      date_reported: dateFound,
-                      status: "found",
-                      reporter: user.id
-                    }),
+                    body: formData
                   });
 
                   let data = {};
@@ -178,6 +187,7 @@ export default function ItemSubmissionPage() {
               <label className="field">
                 <span className="field__label">Image</span>
                 <input
+                  id="imageInput"
                   className="field__input"
                   type="file"
                   accept="image/*"

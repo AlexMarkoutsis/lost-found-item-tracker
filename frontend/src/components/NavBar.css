@@ -1,29 +1,128 @@
-.navbar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+.nb-navbar{
+box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.6);
+overflow:visible;
+position: relative;
+z-index: 10;
 }
 
+.nb-contents{
 
-.navbar-contents{
     display: flex;
-    background-color: #333333;
-    padding: 6px;
-    height: 50px;
+    background:
+       radial-gradient(circle at 80% 50%, rgba(255, 252, 255, 1) 10%, transparent 80%),
+       rgba(250,255,248,1);
+
+    padding:  0.3em 1em;
+    align-items:center;
+    justify-content:space-between;
+
 }
 
-.navbar::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 8px;
-    background: #f4b400;
-}
+.nb-pantherfind-logo-cont{
 
-.pantherfind_logo{
+}
+.nb-pantherfind-logo{
     margin-left: 0.5em;
     width: 8em;
     cursor: pointer;
+}
+
+.nb-actions{
+width:25em;
+height:2.4em;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-right:2em;
+
+}
+
+.nb-post-item-btn{
+display:flex;
+justify-content:center;
+align-items:center;
+width:11em;
+height:90%;
+background:rgba(80,70,90,1);
+border-radius:10px;
+border:transparent;
+padding:0.5em 1em;
+color:white;
+margin-right:3em;
+
+}
+
+.nb-post-item-btn:hover{
+cursor:pointer;
+background:rgba(110,90,110,1);
+box-shadow:0px 0px 2px 0px rgba(110,90,110,1);
+}
+
+.nb-post-item-img{
+width:fit-content;
+height:100%;
+filter:invert(1);
+}
+
+.nb-post-item{
+width:100%;
+font-family: Arial;
+font-weight:bold;
+}
+
+
+.nb-notifications-cont{
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:999px;
+}
+
+.nb-notifications{
+width:1.5em;
+height:1.5em;
+}
+
+.nb-notifications:hover{
+filter: invert(0.4);
+cursor:pointer;
+}
+
+.nb-messages-cont{
+display:flex;
+justify-content:center;
+align-items:center;
+}
+.nb-messages{
+width:2em;
+height:2em;
+}
+.nb-messages:hover{
+filter: invert(0.4);
+cursor:pointer;
+}
+.nb-profile{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:0.5em;
+}
+
+.nb-avatar-cont{
+width:2.3em;
+height:2.3em;
+border-radius: 50%;
+border:thin solid gray;
+overflow:hidden;
+}
+.nb-avatar-cont:hover{
+filter:brightness(0.9);
+cursor:pointer;
+}
+.nb-avatar{
+width:100%;
+height:100%;
+border-radius: 50%;
+}
+.nb-display-name{
 }

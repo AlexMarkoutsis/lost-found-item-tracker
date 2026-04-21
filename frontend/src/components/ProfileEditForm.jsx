@@ -54,7 +54,6 @@ let avatarInput = document.querySelector('#avatarInput')
      let newAvatar = avatarInput.files[0]
      let formData = new FormData();
      if (newAvatar != null){
-            console.log("NOT NULL AVATAR")
          formData.append('avatar', newAvatar);
      } else {
          const res = await fetch(imageFile);
