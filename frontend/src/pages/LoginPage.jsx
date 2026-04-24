@@ -1,6 +1,8 @@
 import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link} from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import pantherFind from '../assets/PantherFind.png'
+import "./LoginPage.css"
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -27,46 +29,44 @@ export default function LoginPage() {
   return (
     <div className="screen">
       <div className="page">
-        <div className="page__title">Login Page</div>
-
-        <div className="frame">
-          <div className="frame__inner">
-            <div className="title-box">PantherFind</div>
-
-            <label className="field">
-              <span className="field__label">Username</span>
+        <div className="lp-frame">
+            <div className="lp-title-box">
+                <img className="lp-title-img" src={pantherFind}/>
+            </div>
+            <div className="lp-sign-in">Sign into an account</div>
+            <label className="lp-username-field">
+              <span className="lp-username-label">Username</span>
               <input
-                className="field__input"
+                className="lp-username-input"
+                placeholder=""
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
                 autoComplete="username"
               />
             </label>
 
-            <label className="field">
-              <span className="field__label">Password</span>
+            <label className="lp-password-field">
+              <span className="lp-password-label">Password</span>
               <input
-                className="field__input"
+                className="lp-password-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                placeholder=""
                 type="password"
                 autoComplete="current-password"
               />
             </label>
 
-            <div className="button-col">
-              <button className="btn" onClick={handleLogin}>
-                login
+            <div className="lp-log-reg-cont">
+              <button className="lp-log-btn" onClick={handleLogin}>
+                Log in
               </button>
 
-              <button className="btn" onClick={() => navigate('/register')}>
-                register
-              </button>
+                <div className="lp-sign-up-cont">
+                    Don't have an account?
+                    <Link className="lp-sign-up-link" to="/register">Sign up</Link>
+                </div>
             </div>
-
-          </div>
         </div>
       </div>
     </div>

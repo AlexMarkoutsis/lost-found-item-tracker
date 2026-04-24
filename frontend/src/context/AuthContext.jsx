@@ -62,7 +62,7 @@ export function AuthProvider({children}) {
 
     async function loadProfile(){
         const token = localStorage.getItem("access");
-    if (!token) return null;
+        if (!token) return null;
         const user = await loadUser();
 
         const res = await fetch(`${API_URL}/api/users/${user.id}/`, {
@@ -105,7 +105,7 @@ export function AuthProvider({children}) {
   }
 
   return (
-    <AuthContext.Provider value={{user, profile, setUser, login, logout, loadUser}}>
+    <AuthContext.Provider value={{user, profile, setUser, login, logout, loadUser, loadProfile}}>
       {children}
     </AuthContext.Provider>
   );

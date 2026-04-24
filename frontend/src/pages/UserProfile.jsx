@@ -15,7 +15,6 @@ function UserProfilePage() {
   const navigate = useNavigate();
    const { id } = useParams();
 
-//   const [profile, setProfile] = useState(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
   const [postedItems, setPostedItems] = useState([]);
@@ -73,9 +72,6 @@ function UserProfilePage() {
     fetchClaimedItems();
   }, [user, profile]);
 
-  const handleEditProfile = () => {
-    setIsEditFormOpen(true);
-  };
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
@@ -148,7 +144,7 @@ console.log(profile)
             </div>
 
             <div className="edit-profile-cont">
-              <button className="edit-profile-btn" onClick={handleEditProfile}>
+              <button className="edit-profile-btn" onClick={()=>{setIsEditFormOpen(true)}}>
                 <img className="edit-profile-icon" src={editIcon} alt="editIcon" />
                 <div className="edit-profile-txt">Edit profile</div>
               </button>

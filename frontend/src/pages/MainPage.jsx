@@ -33,7 +33,6 @@ export default function MainPage() {
   const {user, logout} = useContext(AuthContext)
   const [items, setItems] = useState([])
 
-
   // Item filtering
   const [filterName, setFilterName] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
@@ -114,26 +113,10 @@ export default function MainPage() {
   };
 
   return (
-    <div className="screen">
-      <div className="page">
+    <div className="mp-screen">
+      <div className="mp-page">
 
-        <div className="frame frame--wide">
-          <div className="frame__inner">
-{/*             <div className="main-header"> */}
-{/*               <div className="main-header__left">PantherFind</div> */}
-{/*               <div className="main-header__right"> */}
-{/*                 <button className="messages" */}
-{/*                         onClick={() => navigate("/messages")}> */}
-{/*                   Messages                </button> */}
-{/*                 <button className="notifications" */}
-{/*                         onClick={() => navigate("/notifications")}> */}
-{/*                   Notifications                </button> */}
-
-{/*                 <img className="mp-pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp"/> */}
-{/*                 ({user?.username}) */}
-{/*               </div> */}
-{/*             </div> */}
-
+        <div className="mp-frame">
             <div className="main-body">
               <div className="filter-box">
                 <div className="section-title">Filter Items</div>
@@ -209,6 +192,8 @@ export default function MainPage() {
                       sorted.map((it) => (
 
                             <ItemCard item={it}/>
+
+
                       ))
                     )}
                 </div>
@@ -227,7 +212,6 @@ export default function MainPage() {
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   )

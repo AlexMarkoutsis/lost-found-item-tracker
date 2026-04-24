@@ -1,0 +1,113 @@
+.rp-frame{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+width:32em;
+height:33em;
+padding: 2em;
+background:
+    radial-gradient(circle at 80% 4%, rgba(255,252,250,0.8) 30%, transparent 100%),
+    radial-gradient(circle at 30% 100%, rgba(245,249,255,0.8) 10%, transparent 100%),
+    rgba(220,220,230,0.8);
+border-radius: 1em;
+ box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.4);
+
+}
+
+.rp-title-box{
+width:40%;
+margin-bottom:1em;
+}
+
+
+.rp-title-img{
+width:100%;
+height:100%;
+}
+
+.rp-sign-up{
+margin-bottom:2.5em;
+font-family:"Trebuchet MS";
+}
+
+.rp-field{
+position:relative;
+display:flex;
+flex-direction:column;
+margin-bottom:2em;
+width:85%;
+height:1.8em;
+}
+
+
+.rp-field:has(.rp-input:focus, .rp-input:not(:placeholder-shown))
+.rp-label
+{
+transform: translate(-0.17em, -1.2em) scale(0.9);
+}
+
+.rp-username-label, .rp-password-label, .rp-repassword-label{
+position:absolute;
+top:0.2em;
+transition: transform .2s;
+font-size:1.1em;
+color:gray;
+}
+
+
+.rp-input{
+background:transparent;
+border:transparent;
+border-bottom:thin solid black;
+width:100%;
+height:100%;
+font-size:1.1em;
+font-family: "Times New Roman";
+transition: transform .1s;
+}
+
+.rp-input:focus{
+  outline: transparent;
+  border-bottom:2px solid rgba(50, 0, 255, 0.4);
+}
+
+
+.rp-reg-log-cont{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+margin-top:1.5em;
+}
+
+.rp-reg-btn{
+padding: 0.7em 4em;
+box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4);
+color:rgba(0, 0, 0, 0.7);
+font-size:1em;
+border-radius:10px;
+border:transparent;
+margin-bottom:1em;
+font-family:"Times New Roman";
+font-weight:bold;
+background:rgba(255,232,169,0.8);
+transition: transform .07s;
+}
+.rp-reg-btn:hover{
+cursor:pointer;
+color:rgba(140, 70, 100, 0.8);
+background: rgba(252,239,160,0.7);
+}
+
+.rp-reg-btn:active{
+transform:scale(0.97);
+}
+
+.rp-sign-in-cont{
+font-size:1.04em;
+}
+
+.rp-sign-in-link{
+margin-left:0.5em;
+}
