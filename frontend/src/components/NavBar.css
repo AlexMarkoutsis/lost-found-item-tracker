@@ -9,6 +9,8 @@
 
 .navbar-contents{
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: #333333;
     padding: 6px;
     height: 50px;
@@ -26,4 +28,21 @@
     margin-left: 0.5em;
     width: 8em;
     cursor: pointer;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+}
+
+.navbar_pfp {
+  width: 25px;
+  cursor: pointer;
+}
+
+.navbar-username {
+  color: white;
+  font-size: 14px;
 }

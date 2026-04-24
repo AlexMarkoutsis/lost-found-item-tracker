@@ -234,16 +234,6 @@ html, body {
   font-size: 13px;
 }
 
-.main-header__right{
-  display: flex;
-}
-
-.mp_pfp{
-  width: 25px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
 .main-body {
   display: grid;
   grid-template-columns: 1fr 320px;

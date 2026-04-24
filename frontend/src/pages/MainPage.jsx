@@ -1,9 +1,7 @@
 import {useContext, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {AuthContext} from '../context/AuthContext'
-import default_pfp from "../assets/default_pfp.svg"
 import {ACCESS_TOKEN} from "../constants.js";
-import NavBar from "../components/NavBar.jsx";
 
 
 function formatItem(item) {
@@ -118,20 +116,7 @@ export default function MainPage() {
         <div className="frame frame--wide">
           <div className="frame__inner">
             <div className="main-header">
-              <div className="main-header__left">PantherFind</div>
-              <div className="main-header__right">
-                <button className="messages"
-                        onClick={() => navigate("/messages")}>
-                  Messages
-                </button>
-                <button className="notifications"
-                        onClick={() => navigate("/notifications")}>
-                  Notifications
-                </button>
-
-                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp"/>
-                ({user?.username})
-              </div>
+              <div className="main-header__left">Found Items Dashboard</div>
             </div>
 
             <div className="main-body">
