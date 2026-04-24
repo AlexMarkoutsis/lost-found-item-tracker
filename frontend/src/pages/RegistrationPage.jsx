@@ -20,6 +20,7 @@ export default function RegistrationPage() {
   const canSubmit = username.trim() && password && !mismatch;
 
   async function handleRegister() {
+      console.log("USER: " + username.trim());
     try {
       const response = await fetch("/api/auth/register/", {
         method: "POST",
@@ -27,6 +28,7 @@ export default function RegistrationPage() {
         body: JSON.stringify({
           username: username.trim(),
           password: password,
+          password2: rePassword,
         }),
       });
 
@@ -38,6 +40,7 @@ export default function RegistrationPage() {
         } else {
           alert(data.error || "Registration failed");
         }
+        console.log("Registration FAIL");
         return;
       }
 
@@ -45,6 +48,7 @@ export default function RegistrationPage() {
       await login(username.trim(), password);
 
       navigate("/main");
+
     } catch (err) {
       console.error("Registration error:", err);
       alert("Something went wrong during registration.");
@@ -76,7 +80,7 @@ export default function RegistrationPage() {
               <input
                 className="rp-password-input rp-input"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {console.log(e);setPassword(e.target.value)}}
                 placeholder=""
                 type="password"
                 autoComplete="new-password"

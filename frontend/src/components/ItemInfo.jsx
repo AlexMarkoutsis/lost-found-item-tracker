@@ -70,6 +70,8 @@ export default function ItemInfo({editing, onClose, item}){
     fetchReporter();
   }, [item]);
 
+const img = item?.image ? `${API_URL}${item?.image}` : null;
+
 const isOwner =
   reporterProfile && profile &&
   item?.reporter_username === user?.username;
@@ -171,10 +173,10 @@ const isOwner =
                                 }
 
                     </div>
-
-                    <div className="ii-img-cont">
-                        <img className="ii-img" src={`${API_URL}${item?.image}`}/>
-                    </div>
+                    {img != null ?
+                    (<div className="ii-img-cont">
+                        <img className="ii-img" src={img}/>
+                    </div>) : <></>}
               </div>
           </div>
         </>,

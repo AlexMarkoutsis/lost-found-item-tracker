@@ -66,9 +66,7 @@ let imageInput = document.querySelector('#imageInput');
                     let formData = new FormData();
                     if(newImg != null){
                         console.log("newImg not null");
-                    }
-                    else{
-                        console.log("NULL");
+                        formData.append("image", newImg);
                     }
                     formData.append("title", itemName.trim());
                     formData.append("description", description.trim());
@@ -76,7 +74,8 @@ let imageInput = document.querySelector('#imageInput');
                     formData.append("location", location.trim());
                     formData.append("date_reported", dateFound);
                     formData.append("status", "found");
-                    formData.append("image", newImg);
+
+
                     const access_token = localStorage.getItem(ACCESS_TOKEN)
                     const response = await fetch("/api/items/create/", {
                     method: "POST",
