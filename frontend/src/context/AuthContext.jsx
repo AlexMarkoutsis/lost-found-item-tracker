@@ -1,15 +1,20 @@
 import {createContext, useState} from "react";
 import {useEffect} from "react";
+import {API_URL} from "../constants"
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({children}) {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     async function init() {
       const loaded = await loadUser();
       if (loaded) setUser(loaded);
+
+      const prof = await loadProfile();
+      if (prof) setProfile(prof);
     }
     init();
   }, []);
@@ -29,9 +34,13 @@ export function AuthProvider({children}) {
     localStorage.setItem("access", data.access);
     localStorage.setItem("refresh", data.refresh);
 
-    const loaded = await loadUser();
-    setUser(loaded);
-    return loaded;
+    const loadedUser = await loadUser();
+    setUser(loadedUser);
+
+    const loadedProfile = await loadProfile();
+    setProfile(loadedProfile);
+
+    return loadedUser;
   }
 
   async function loadUser() {
@@ -50,6 +59,24 @@ export function AuthProvider({children}) {
 
     return await response.json();
   }
+
+    async function loadProfile(){
+        const token = localStorage.getItem("access");
+        if (!token) return null;
+        const user = await loadUser();
+
+        const res = await fetch(`${API_URL}/api/users/${user.id}/`, {
+      headers: {Authorization: `Bearer ${token}`},
+    });
+        if (!res.ok) {
+      const refreshed = await refreshToken();
+      if (!refreshed) return null;
+      return await loadProfile();
+    }
+
+        return await res.json();
+
+    }
 
   async function refreshToken() {
     const refresh = localStorage.getItem("refresh");
@@ -78,7 +105,7 @@ export function AuthProvider({children}) {
   }
 
   return (
-    <AuthContext.Provider value={{user, setUser, login, logout, loadUser}}>
+    <AuthContext.Provider value={{user, profile, setUser, login, logout, loadUser, loadProfile}}>
       {children}
     </AuthContext.Provider>
   );

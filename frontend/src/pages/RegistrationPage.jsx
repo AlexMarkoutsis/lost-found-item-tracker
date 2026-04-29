@@ -1,6 +1,8 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import pantherFind from '../assets/PantherFind.png';
+import "./RegistrationPage.css"
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export default function RegistrationPage() {
   const canSubmit = username.trim() && password && !mismatch;
 
   async function handleRegister() {
+      console.log("USER: " + username.trim());
     try {
       const response = await fetch("/api/auth/register/", {
         method: "POST",
@@ -25,6 +28,7 @@ export default function RegistrationPage() {
         body: JSON.stringify({
           username: username.trim(),
           password: password,
+          password2: rePassword,
         }),
       });
 
@@ -36,6 +40,7 @@ export default function RegistrationPage() {
         } else {
           alert(data.error || "Registration failed");
         }
+        console.log("Registration FAIL");
         return;
       }
 
@@ -43,6 +48,7 @@ export default function RegistrationPage() {
       await login(username.trim(), password);
 
       navigate("/main");
+
     } catch (err) {
       console.error("Registration error:", err);
       alert("Something went wrong during registration.");
@@ -52,42 +58,42 @@ export default function RegistrationPage() {
   return (
     <div className="screen">
       <div className="page">
-        <div className="page__title">Registration Page</div>
+        <div className="rp-frame">
+            <div className="rp-title-box">
+                <img className="rp-title-img" src={pantherFind}/>
+            </div>
+            <div className="rp-sign-up">Register for an account</div>
 
-        <div className="frame">
-          <div className="frame__inner">
-            <div className="title-box">Create Account</div>
-
-            <label className="field">
-              <span className="field__label">Username</span>
+            <label className="rp-username-field rp-field">
+              <span className="rp-username-label rp-label">Username</span>
               <input
-                className="field__input"
+                className="rp-username-input rp-input"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+                placeholder=""
                 autoComplete="username"
               />
             </label>
 
-            <label className="field">
-              <span className="field__label">Password</span>
+            <label className="rp-password-field rp-field">
+              <span className="rp-password-label rp-label">Password</span>
               <input
-                className="field__input"
+                className="rp-password-input rp-input"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                onChange={(e) => {console.log(e);setPassword(e.target.value)}}
+                placeholder=""
                 type="password"
                 autoComplete="new-password"
               />
             </label>
 
-            <label className="field">
-              <span className="field__label">Re-Password</span>
+            <label className="rp-repassword-field rp-field">
+              <span className="rp-repassword-label rp-label">Re-Password</span>
               <input
-                className="field__input"
+                className="rp-repassword-input rp-input"
                 value={rePassword}
                 onChange={(e) => setRePassword(e.target.value)}
-                placeholder="Re-Password"
+                placeholder=""
                 type="password"
                 autoComplete="new-password"
               />
@@ -95,23 +101,19 @@ export default function RegistrationPage() {
 
             {mismatch && <p className="error">Passwords do not match.</p>}
 
-            <div className="button-col">
+            <div className="rp-reg-log-cont">
               <button
-                className="btn"
+                className="rp-reg-btn"
                 disabled={!canSubmit}
                 onClick={handleRegister}
               >
                 Create and Login
               </button>
-
-              <button
-                className="btn btn--secondary"
-                onClick={() => navigate("/login")}
-              >
-                Back
-              </button>
+              <div className="rp-sign-in-cont">
+                    Already have an account?
+                    <Link className="rp-sign-in-link" to="/login">Sign in</Link>
+                </div>
             </div>
-          </div>
         </div>
       </div>
     </div>

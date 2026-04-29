@@ -1,0 +1,321 @@
+.ii-backdrop{
+  position:fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+top:50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index:999;
+}
+
+.ii-cont{
+position:fixed;
+  top:50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 700px;
+  width: 1200px;
+
+  z-index: 1000;
+  font-size:1.1em;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+
+  opacity: 1;
+  transition: opacity 0.15s ease-in, top 0.15s ease-in;
+  @starting-style {
+    opacity: 0;
+    top:51%
+  }
+}
+
+.ii-panel-cont{
+height: 100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+flex:1;
+min-height:0;
+max-width:fit-content;
+}
+
+.ii-header-cont{
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:0.5em;
+position:relative;
+width:100%;
+
+}
+.ii-header{
+font-size:0.9em;
+background:rgba(255,255,255,0.9);
+
+padding:0.2em 0.8em;
+border-radius: 6px;
+}
+.ii-exit-btn{
+position:absolute;
+left: 0em;
+top:0em;
+width:5em;
+height:1.5em;
+font-size:1em;
+font-family:"Times New Roman";
+border-radius:10px;
+border:transparent;
+color:rgba(0,0,0,1);
+background:rgba(255,255,255,0.9);
+}
+.ii-exit-btn:hover{
+cursor:pointer;
+color:rgba(170,30,50,1);
+}
+
+.ii-panel{
+min-width: 24em;
+max-width: 24em;
+height:100%;
+min-height:0;
+background-image:
+    radial-gradient(circle at 80% 0%, rgba(240, 235, 240, 1), rgba(240, 235, 240, 1)),
+    radial-gradient(circle at 30% 50%, rgba(255, 235, 240, 1), rgba(255, 235, 240, 1));
+box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+border-radius:8px;
+display:flex;
+
+flex-direction:column;
+align-items:center;
+
+}
+
+.ii-panel-header{
+background: rgba(0, 0, 0, 0.12);
+width:100%;
+padding:1em 1.4em;
+}
+
+.ii-title{
+display:flex;
+align-items:center;
+
+font-size:1.1em;
+font-weight:bold;
+font-family:"Trebuchet MS";
+background:rgba(255,255,255,0.8);
+padding:0.2em;
+border-radius:10px;
+}
+.ii-title-icon{
+
+margin-right:0.5em;
+}
+
+.ii-profile-cont{
+display:flex;
+align-items:center;
+position:relative;
+margin-top:0.4em;
+}
+.ii-profile{
+display:flex;
+align-items:center;
+gap:1em;
+background:rgba(10,0,20,0.7);
+color:rgba(255,255,255,0.8);
+padding:0.4em 0.8em;
+border-radius: 10px;
+
+}
+.ii-profile:hover{
+cursor:pointer;
+background:rgba(0,0,10,0.8);
+}
+.ii-avatar{
+width:3em;
+height:3em;
+border-radius:50%;
+}
+
+.ii-names{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:0.2em;
+}
+.ii-display_name{
+font-size:1.1em;
+color:white
+}
+.ii-username{
+font-size:0.9em;
+}
+
+.ii-profile-message{
+position:absolute;
+right:0em;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:0.6em;
+border:transparent;
+border-radius:10px;
+}
+
+.ii-profile-message:hover{
+cursor:pointer;
+background:rgba(255, 255, 255, 0.8);
+}
+
+.ii-profile-message-icon{
+width:2em;
+height:2em;
+}
+
+.ii-info{
+padding:1.2em 1.4em;
+width:100%;
+height:100%;
+min-height: 0;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+gap:0.5em;
+
+}
+.ii-description, .ii-category, .ii-location, .ii-date-reported,.ii-status{
+display:flex;
+align-items:center;
+font-size:1.1em;
+width:100%;
+}
+.ii-description{
+width:100%;
+height:100%;
+display: flex;
+flex-direction: row;
+flex:1;
+min-height:0;
+}
+.ii-description-contents{
+overflow-y:auto;
+overflow-x:hidden;
+height: 100%;
+scrollbar-width: thin;
+scrollbar-color: #999 transparent;
+min-height:0;
+
+}
+.ii-description-header{
+background:rgba(210,210,210,0.7);
+
+}
+
+.ii-sub-info{
+display:flex;
+flex-direction:column;
+gap:0.4em;
+}
+
+.ii-category{
+
+}
+.ii-category-header{
+background:rgba(210,180,180,0.7);
+}
+.ii-location{
+}
+.ii-location-header{
+background:rgba(180,190,210,0.7);
+}
+.ii-date-reported{
+
+}
+.ii-date-reported-header{
+background:rgba(180,210,180,0.7);
+}
+.ii-status{
+}
+.ii-status-header{
+background:rgba(210,210,180,0.7);
+}
+.ii-description-header, .ii-category-header, .ii-location-header,
+.ii-date-reported-header, .ii-status-header{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+margin-right:0.5em;
+font-size:0.85em;
+width: 5.8em;
+min-width:5.8em;
+padding:0.3em;
+border-radius: 8px;
+}
+
+.ii-title-icon, .ii-description-icon, .ii-category-icon, .ii-location-icon,
+.ii-date-reported-icon, .ii-status-icon{
+width:1.7em;
+height:1.6em;
+
+}
+.ii-location-icon{
+width:1.4em;
+height:1.8em;
+}
+
+.ii-edit-item, .ii-claim-item{
+width:100%;
+padding:0.2em;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.ii-edit-item-btn, .ii-claim-item-btn{
+font-size:0.95em;
+padding:0.3em 0.6em;
+border-radius:6px;
+border:transparent;
+display:flex;
+align-items:center;
+justify-content:center;
+outline:transparent;
+font-family:"Times New Roman";
+}
+
+.ii-edit-item-btn:hover, .ii-claim-item-btn:hover{
+background: rgba(220, 220, 220, 1);
+cursor:pointer;
+}
+
+.ii-edit-item-icon, .ii-claim-item-icon{
+width:1em;
+height:1em;
+margin-right:0.5em;
+
+}
+.ii-claim-item-icon{
+width:1.2em;
+height:1.2em;
+}
+
+.ii-img-cont{
+display:flex;
+justify-content:center;
+align-items:center;
+margin-left:1em;
+width:fit-content;
+height:100%;
+
+}
+.ii-img{
+width:100%;
+height:100%;
+object-fit:contain;
+}

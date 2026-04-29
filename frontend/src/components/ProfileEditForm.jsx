@@ -13,29 +13,15 @@ export default function ProfileEditForm({editing, onClose}){
 const { id } = useParams();
 const [imageFile, setImageFile] = useState(null);
 
-const { user } = useContext(AuthContext)
-  const [profile, setProfile] = useState(null);
+const { user, profile} = useContext(AuthContext)
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [saveDisabled, setSaveDisabled] = useState(true);
-// const avatarURL = `${API_URL}${profile.avatar}`;
 
-
-const fetchProfile = async () => {
-      try {
-          const res = await fetch(`${API_URL}/api/users/${id}/`);
-          const data = await res.json();
-          setProfile(data);
-          setBio(data.description);
-          setDisplayName(data.display_name);
-          setImageFile(API_URL + data.avatar);
-//            console.log("API URL: " + API_URL + "    |avatar: "+ data.avatar)
-      } catch (err) {
-          console.log("User profile fetch data failed: " + err);
-      }
-  }
 useEffect(() => {
-      fetchProfile();
+      setBio(profile.description);
+      setDisplayName(profile.display_name);
+      setImageFile(API_URL + profile.avatar);
   }, []);
 
 const onImgInputSet = (e) =>{
@@ -54,7 +40,6 @@ let avatarInput = document.querySelector('#avatarInput')
      let newAvatar = avatarInput.files[0]
      let formData = new FormData();
      if (newAvatar != null){
-            console.log("NOT NULL AVATAR")
          formData.append('avatar', newAvatar);
      } else {
          const res = await fetch(imageFile);
@@ -95,7 +80,6 @@ if (!editing) { return null; }
     return ReactDom.createPortal(
         <>
           <div className='pef-backdrop'>
-              faf
               <div className="pef-pef-container">
                     <div className="pef-pef">
                         <div className="pef-header">

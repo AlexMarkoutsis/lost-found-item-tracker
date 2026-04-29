@@ -1,0 +1,109 @@
+.lp-frame{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+width:30em;
+height:30em;
+padding: 2em;
+background:
+    radial-gradient(circle at 80% 4%, rgba(255,252,240,0.8) 30%, transparent 100%),
+    radial-gradient(circle at 30% 100%, rgba(240,243,255,0.8) 10%, transparent 100%),
+    rgba(220,220,230,0.8);
+border-radius: 1em;
+ box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.4);
+
+}
+
+.lp-title-box{
+width:50%;
+margin-bottom:1em;
+}
+
+.lp-title-img{
+width:100%;
+height:100%;
+}
+
+.lp-sign-in{
+margin-bottom:2.5em;
+font-family:"Trebuchet MS";
+}
+
+.lp-username-field, .lp-password-field{
+position:relative;
+display:flex;
+flex-direction:column;
+margin-bottom:2em;
+width:85%;
+height:1.8em;
+}
+
+.lp-username-field:has(.lp-username-input:focus, .lp-username-input:not(:placeholder-shown))
+.lp-username-label,
+.lp-password-field:has(.lp-password-input:focus, .lp-password-input:not(:placeholder-shown))
+.lp-password-label
+{
+transform: translate(-0.17em, -1.2em) scale(0.9);
+}
+
+.lp-username-label, .lp-password-label{
+position:absolute;
+top:0.2em;
+transition: transform .2s;
+font-size:1.1em;
+color:gray;
+}
+
+.lp-username-input, .lp-password-input{
+background:transparent;
+border:transparent;
+border-bottom:thin solid black;
+width:100%;
+height:100%;
+font-size:1.1em;
+font-family: "Times New Roman";
+transition: transform .1s;
+}
+
+.lp-username-input:focus, .lp-password-input:focus{
+  outline: transparent;
+  border-bottom:2px solid turquoise;
+}
+
+
+.lp-log-reg-cont{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+margin-top:1.5em;
+}
+.lp-log-btn{
+padding: 0.7em 4em;
+box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4);
+color:rgba(0, 0, 0, 0.7);
+font-size:1em;
+border-radius:10px;
+border:transparent;
+margin-bottom:1em;
+font-family:"Times New Roman";
+font-weight:bold;
+background:rgba(255,252,249,0.8);
+transition: transform .07s;
+}
+.lp-log-btn:hover{
+cursor:pointer;
+color:rgba(20, 120, 120, 0.8);
+background:
+    rgba(252,249,250,0.7);
+}
+.lp-log-btn:active{
+transform:scale(0.97);
+}
+.lp-sign-up-cont{
+font-size:1.04em;
+}
+.lp-sign-up-link{
+margin-left:0.5em;
+}

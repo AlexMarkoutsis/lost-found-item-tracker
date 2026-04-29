@@ -92,10 +92,10 @@ def user_profile_edit(request, pk):
         new_description = request.data.get('description')
         new_avatar = request.FILES.get('avatar')
 
-        print(f"\033[92m FILES: \033[0m", request.FILES)
-        print(f"\033[92m NEW AVA: \033[0m", new_avatar)
+        #print(f"\033[92m FILES: \033[0m", request.FILES)
+        #print(f"\033[92m NEW AVA: \033[0m", new_avatar)
         try:
-            user_profile = UserProfile.objects.get(id=pk)
+            user_profile = UserProfile.objects.get(user_id=pk)
             user_profile.display_name = new_name
             user_profile.description = new_description
             user_profile.avatar = new_avatar
@@ -114,6 +114,10 @@ class UserProfileEdit(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self):
+        pk = self.kwargs.get("pk")
+        return get_object_or_404(UserProfile, user_id=pk)
 
     def update(self, request, *args, **kwargs):
         kwargs['partial'] = True

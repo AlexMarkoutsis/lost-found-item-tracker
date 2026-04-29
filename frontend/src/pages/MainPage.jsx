@@ -3,7 +3,9 @@ import {useNavigate} from 'react-router-dom'
 import {AuthContext} from '../context/AuthContext'
 import default_pfp from "../assets/default_pfp.svg"
 import {ACCESS_TOKEN} from "../constants.js";
-import NavBar from "../components/NavBar.jsx";
+import ItemCard from "../components/ItemCard";
+import { API_URL } from "../constants";
+import "./MainPage.css"
 
 
 function formatItem(item) {
@@ -15,12 +17,13 @@ function formatItem(item) {
     ? `Date found: ${item.date_reported}`
     : ''
   const meta = [cat, where, when].filter(Boolean).join(' · ')
-
+  const image = item.image
   return (
     <div>
       <div className="list-item__title">{header}</div>
       {desc ? <div className="list-item__desc">{desc}</div> : null}
       {meta ? <div className="list-item__meta">{meta}</div> : null}
+      {image ? <img className="list-item__img" src={`${API_URL}${image}`}/> : null}
     </div>
   )
 }
@@ -29,7 +32,6 @@ export default function MainPage() {
   const navigate = useNavigate()
   const {user, logout} = useContext(AuthContext)
   const [items, setItems] = useState([])
-
 
   // Item filtering
   const [filterName, setFilterName] = useState('');
@@ -81,7 +83,7 @@ export default function MainPage() {
         const data = await response.json();
 
         setItems(data);   // already filtered by backend
-      } catch (err) {
+        } catch (err) {
         console.error("Failed to load items:", err);
       }
     }
@@ -111,31 +113,12 @@ export default function MainPage() {
   };
 
   return (
-    <div className="screen">
-      <div className="page">
-        <div className="page__title">Main Page</div>
+    <div className="mp-screen">
+      <div className="mp-page">
 
-        <div className="frame frame--wide">
-          <div className="frame__inner">
-            <div className="main-header">
-              <div className="main-header__left">PantherFind</div>
-              <div className="main-header__right">
-                <button className="messages"
-                        onClick={() => navigate("/messages")}>
-                  Messages
-                </button>
-                <button className="notifications"
-                        onClick={() => navigate("/notifications")}>
-                  Notifications
-                </button>
-
-                <img className="mp_pfp" src={default_pfp} onClick={handlePfpClick} alt="pfp"/>
-                ({user?.username})
-              </div>
-            </div>
-
+        <div className="mp-frame">
             <div className="main-body">
-              <div className="filter-box" style={{marginBottom: '1rem'}}>
+              <div className="filter-box">
                 <div className="section-title">Filter Items</div>
 
                 <label className="field">
@@ -194,49 +177,30 @@ export default function MainPage() {
                     }
                   }}
                 >
-                  Apply Filters
-                </button>
+                  Apply Filters                </button>
               </div>
 
               <div className="main-list">
-                <div className="section-title">Found Items</div>
+                <div className="section-title">Most recent published items</div>
 
-                <div className="list-box" role="list">
-                  <div className="list-box__scroll">
+                <div className="item-grid" role="list">
                     {sorted.length === 0 ? (
                       <div className="list-item list-item--empty">
                         No found items yet.
                       </div>
                     ) : (
                       sorted.map((it) => (
-                        <div key={it.id} className="list-item" role="listitem">
-                          <div onClick={() => navigate('/item-details', {state: {item: it, from: 'main'}})}>
-                            {formatItem(it)}
-                          </div>
 
-                          {it.status !== "claimed" && (<button
-                            className="btn btn--small"
-                            onClick={(e) => {
-                              e.stopPropagation();   // prevents opening item details
-                              console.log("Claim clicked for item:", it.id);
-                              handleClaim(it.id)
-                            }}
-                            style={{marginTop: "0.5rem"}}
-                          >
-                            Claim Item
-                          </button>)}
-                        </div>
+                            <ItemCard item={it}/>
+
+
                       ))
                     )}
-                  </div>
                 </div>
+{/*                 <ItemCard item={items[0]}/> */}
               </div>
 
               <div className="main-actions">
-                <button className="btn" onClick={() => navigate('/submit')}>
-                  Post Item
-                </button>
-
                 <button
                   className="btn btn--secondary"
                   onClick={() => {
@@ -244,12 +208,10 @@ export default function MainPage() {
                     navigate("/login");
                   }}
                 >
-                  Log out
-                </button>
+                  Log out                </button>
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   )
